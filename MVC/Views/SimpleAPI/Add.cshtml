@@ -30,7 +30,14 @@
         </div>
         <div class="form-group">
             <label for="c_depart">Department:</label>
-            <input type="text" class="form-control" id="depart" name="depart">
+            <br>
+            <select for="c_depart" id="c_depart">
+                <option value="1">CEO</option>
+                <option value="2">Testing</option>
+                <option value="3">R&D</option>
+                
+            </select>
+            @* <input type="text" class="form-control" id="depart" name="depart"> *@
         </div>
         <div class="form-group">
             <label for="imgFile">Image:</label>
@@ -69,7 +76,7 @@
                 formData.append("c_empname", $('#empname').val());
                 formData.append("c_dob", $('#dob').val());
                 formData.append("c_empgender", $('input[name="empgender"]:checked').val());
-                formData.append("c_depart", $('#depart').val());
+                formData.append("c_depart", $('#c_depart').val());
                 formData.append("c_img", "a");
                 formData.append("c_shift", $('input[name="shift"]:checked').map(function () { return $(this).val(); }).get().join());
                 
@@ -82,7 +89,15 @@
                     contentType: false,
 
                     success: function (data) {
-                        alert("Employee added successfully!");
+                        if(data){
+                            alert("Employee added successfully!");
+                            debugger
+                            window.location="./Index";
+                        }
+                        else{
+                            alert("Some error Occured!");
+                        }
+                        
                     },
                     error: function (xhr, status, error) {
                         alert("Error adding employee: " + error);

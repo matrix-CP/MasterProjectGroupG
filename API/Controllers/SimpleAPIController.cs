@@ -47,9 +47,10 @@ namespace API.Controllers
 
         [HttpPost] 
         [Route("AddEmployee")]
-        public void Add([FromForm]tblEmployee emp)
+        public IActionResult Add([FromForm]tblEmployee emp)
         {
            _emprepo.AddEmployee(emp);
+           return Ok(true);
         }
 
         [HttpPut]

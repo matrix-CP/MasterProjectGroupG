@@ -15,19 +15,22 @@ namespace API.Repositories
             if(employee.imgFile != null && employee.imgFile.Length > 0)
             {
                 // var folderPath = "D://My Learning//Core MVC//MasterProjectGroupG//MVC//wwwroot//Images";
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
-                var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
-                var fullPath = Path.Combine(folderPath, filePath);
-                if(!Directory.Exists(folderPath))
+                var folderPath = @"C:\Users\bhatt\OneDrive\Desktop\Casepoint Internship\GitDemo\MasterProject\MasterProjectGroupG\MVC\";
+                var folderPath2 = Path.Combine(folderPath,"wwwroot", "Images");
+                Console.WriteLine(folderPath2);
+                // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath2, employee.imgFile.FileName);
+                if(!Directory.Exists(folderPath2))
                 {
-                    Directory.CreateDirectory(folderPath);
+                    Directory.CreateDirectory(folderPath2);
                 }
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/"+filePath;
+                employee.c_img = "/Images/"+employee.imgFile.FileName;
+
 
             }
             var cmd = new NpgsqlCommand();
@@ -152,19 +155,22 @@ namespace API.Repositories
         {
             if(employee.imgFile != null && employee.imgFile.Length > 0)
             {
-                var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images");
-                var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
-                var fullPath = Path.Combine(folderPath, filePath);
-                if(!Directory.Exists(folderPath))
+                var folderPath = @"C:\Users\bhatt\OneDrive\Desktop\Casepoint Internship\GitDemo\MasterProject\MasterProjectGroupG\MVC\";
+                var folderPath2 = Path.Combine(folderPath,"wwwroot", "Images");
+                Console.WriteLine(folderPath2);
+                // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath2, employee.imgFile.FileName);
+                if(!Directory.Exists(folderPath2))
                 {
-                    Directory.CreateDirectory(folderPath);
+                    Directory.CreateDirectory(folderPath2);
                 }
                 using (var stream = new FileStream(fullPath, FileMode.Create))
                 {
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/"+filePath;
+                employee.c_img = "/Images/"+employee.imgFile.FileName;
+
             }
             else{
                 employee.c_img = GetExistingPath(employee.c_empid);

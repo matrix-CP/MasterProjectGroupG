@@ -14,7 +14,7 @@ namespace MVC.Repostories
         {
             if(employee.imgFile != null && employee.imgFile.Length > 0)
             {
-                // var folderPath = "D://My Learning//Core MVC//MasterProjectGroupG//MVC//wwwroot//Images";
+                // var folderPath = "C:\Users\bhatt\OneDrive\Desktop\Casepoint Internship\GitDemo\MasterProject\MasterProjectGroupG\MVC\wwwroots";
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
                 // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
                 var fullPath = Path.Combine(folderPath, employee.imgFile.FileName);

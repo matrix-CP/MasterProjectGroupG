@@ -11,64 +11,64 @@ namespace MVC.Repostories
 {
     public class EmployeeRepository : CommonRepository , IEmployeeRepository
     {
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        // private readonly IHttpContextAccessor _httpContextAccessor;
-        // private readonly IConfiguration _configuration;
+        public bool IsAuthenticated
+        {
+            get
+            {
+                var session = _httpContextAccessor.HttpContext.Session;
+                return session.GetInt32("IsAuthenticated") == 1;
+            }
+        }
 
-        // public bool IsAuthenticated
-        // {
-        //     get
-        //     {
-        //         var session = _httpContextAccessor.HttpContext.Session;
-        //         return session.GetInt32("IsAuthenticated") == 1;
-        //     }
-        // }
+        public EmployeeRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        {
+            _httpContextAccessor = httpContextAccessor;
+        }
 
-        // public EmployeeRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
-        // {
-        //     _configuration = configuration; // Assign IConfiguration in the constructor
-        //     _httpContextAccessor = httpContextAccessor;
-        // }
+        public void AddEmployee(tblEmployee employee)
+        {
+            if(employee.imgFile != null && employee.imgFile.Length > 0)
+            {
+                var folderPath = "D://casepoint//master//MasterProjectGroupG//MVC//wwwroot//Images";
+                // var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
+                var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath, filePath);
+                if(!Directory.Exists(folderPath))
+                {
+                    Directory.CreateDirectory(folderPath);
+                }
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    employee.imgFile.CopyTo(stream);
+                }
 
-        // public List<tblEmployee> FetchEmployeeDetails()
-        // {
-        //     List<tblEmployee> employees = new List<tblEmployee>(); // Corrected the variable name to plural 'employees'
-            
-        //     using (var conn = new NpgsqlConnection(_configuration.GetConnectionString("YourConnectionString"))) // Use IConfiguration to get the connection string
-        //     {
-        //         try
-        //         {
-        //             conn.Open();
-        //             using (var command = new NpgsqlCommand("SELECT e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname FROM t_empmaster e INNER JOIN t_departmaster d ON e.c_depart = d.c_depart WHERE c_uid = @c_uid", conn))
-        //             {
-        //                 command.Parameters.AddWithValue("@c_uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
-        //                 using (var reader = command.ExecuteReader())
-        //                 {
-        //                     while (reader.Read()) // Use while loop to read all records
-        //                     {
-        //                         tblEmployee emp = new tblEmployee(); // Rename the variable to 'emp'
-        //                         emp.c_empid = Convert.ToInt32(reader["c_empid"]);
-        //                         emp.c_empname = reader["c_empname"].ToString();
-        //                         emp.c_empgender = reader["c_empgender"].ToString();
-        //                         emp.c_dob = DateTime.Parse(reader["c_dob"].ToString()).Date;
-        //                         emp.c_shift = reader["c_shift"].ToString().Split(',').ToList();
-        //                         emp.c_depart = Convert.ToInt32(reader["c_depart"]);
-        //                         emp.depname = reader["c_depname"].ToString();
-        //                         emp.c_img = reader["c_img"].ToString();
-        //                         employees.Add(emp); // Add the employee to the list
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         catch (Exception ex)
-        //         {
-        //             throw ex;
-        //         }
-        //     }
-            
-        //     return employees;
-        // }
+                employee.c_img = "/Images/"+filePath;
 
+            }
+            else
+            {
+                employee.c_img = "/Images/default.png";
+            }
+
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "INSERT INTO t_empmaster (c_empname, c_empgender, c_dob, c_shift, c_depart, c_img, c_uid) VALUES(@name, @gender, @dob, @shift, @dept, @img, @uid)";
+            cmd.Parameters.AddWithValue("@name", employee.c_empname);
+            cmd.Parameters.AddWithValue("@gender", employee.c_empgender);
+            cmd.Parameters.AddWithValue("@dob", employee.c_dob);
+            string shifts = string.Join(',', employee.c_shift);
+            cmd.Parameters.AddWithValue("@shift", shifts);
+            cmd.Parameters.AddWithValue("@dept", employee.c_depart);
+            cmd.Parameters.AddWithValue("@img", employee.c_img);
+            // cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+           cmd.Parameters.AddWithValue("@uid", 1);
+            cmd.ExecuteNonQuery();
+            conn.Close();
+        }
 
         
 

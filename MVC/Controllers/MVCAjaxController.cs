@@ -21,10 +21,13 @@ namespace MVC.Controllers
 
         private readonly IUserRepository _userRepository;
 
-        public MVCAjaxController(ILogger<MVCAjaxController> logger, IUserRepository userRepository)
+        private readonly IEmployeeRepository _employeeRepository;
+
+        public MVCAjaxController(ILogger<MVCAjaxController> logger, IUserRepository userRepository, IEmployeeRepository employeeRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _employeeRepository = employeeRepository;
         }
 
         public IActionResult Index()
@@ -72,6 +75,18 @@ namespace MVC.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult AddEmployee()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public JsonResult AddEmployee([FromForm] tblEmployee employee)
+        {
+            _employeeRepository.AddEmployee(employee);
+            return Json("Employee Added Successfully");
+        }
 
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

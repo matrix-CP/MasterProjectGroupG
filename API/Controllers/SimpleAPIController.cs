@@ -14,9 +14,11 @@ namespace API.Controllers
     public class SimpleAPIController : ControllerBase
     {
         private readonly IEmployeeRepository _emprepo;
-        public SimpleAPIController(IEmployeeRepository emprepo)
+        private readonly IUserRepository _userrepo;
+        public SimpleAPIController(IEmployeeRepository emprepo, IUserRepository userrepo)
         {
             _emprepo = emprepo; 
+            _userrepo = userrepo; 
         }
 
         [HttpGet("GetAllEmployee")]
@@ -43,7 +45,7 @@ namespace API.Controllers
             return _emprepo.GetDepartments();
         }
 
-        [HttpPut] 
+        [HttpPost] 
         [Route("AddEmployee")]
         public void Add([FromForm]tblEmployee emp)
         {
@@ -54,6 +56,7 @@ namespace API.Controllers
         [Route("UpdateEmployee/")]
         public void Edit([FromForm]tblEmployee emp)
         {
+
             _emprepo.UpdateEmployee(emp);
         }
 

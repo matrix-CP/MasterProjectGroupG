@@ -147,6 +147,7 @@ namespace API.Repositories
             conn.Close();
             return imgPath;
         }
+        
         public void UpdateEmployee(tblEmployee employee)
         {
             if(employee.imgFile != null && employee.imgFile.Length > 0)

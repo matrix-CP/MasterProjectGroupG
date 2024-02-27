@@ -1,0 +1,207 @@
+@model MVC.Models.tblEmployee
+
+@{
+    ViewBag.Title = "Index";
+    // Layout = "~/Views/Shared/_ProducttLayout.cshtml";
+}
+
+@* <h2>Employee Details</h2> *@
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js" integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    @* if (localStorage.getItem('token') == null) {
+        window.location = '/MvcUser/Login';
+    } *@
+
+    $(document).ready(function () {
+        LoadStudents();
+    });
+
+    function LoadStudents() {
+        var settings = {
+            "url": "https://localhost:7022/api/SimpleAPI/GetAllEmployee",
+            "method": "GET",
+            "timeout": 0,
+            "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') }
+        };
+
+        $.ajax(settings).done(function (response) {
+            var emps = "";
+            $.each(response, function (index, value) {
+                emps += '<tr>'
+                 @* + '<td><input type="checkbox" class="studentCheckbox" data-student-id="' + value.c_empid + '"></td>' *@
+                  
+                    + '<td>' + value.c_empid + '</td>'
+                    + '<td>' + value.c_empname + '</td>'
+                    + '<td>' + value.c_empgender + '</td>'
+                    + '<td>' + value.c_dob + '</td>'
+                    + '<td>' + value.c_shift + '</td>'
+                    + '<td>' + value.depname + '</td>'
+                    + '<td><img src="'+value.c_img+'"/></td>'
+                    + '<td> <a href="/SimpleAPI/Edit/?id=' + value.c_empid + '" class="text text-primary">Edit</a></td>' 
+                    + '<td> <a href="#" onclick="DeleteStudent(' + value.c_empid + ')" class="text text-danger">Delete</a></td>' 
+                    + '</tr>';
+            });
+            $('#tableStudents').append(emps);
+            console.log(response);
+        });
+    }
+
+    function DeleteStudent(id) {
+    if (confirm("Do you want to delete") == true) {
+        var settings = {
+            "url": "https://localhost:7022/api/SimpleAPI/delete/" + id,
+            "method": "DELETE",
+            "timeout": 0,
+            "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') }
+        };
+
+        $.ajax(settings).done(function (response) {
+            window.location = "/SimpleAPI/Index";
+        });
+    } 
+ }
+
+</script>
+
+
+<script>
+
+
+
+$(document).ready(function () {
+  
+    $('#deleteSelectedBtn').click(function () {
+        var selectedIds = []; 
+        $('.studentCheckbox:checked').each(function () {
+            selectedIds.push($(this).data('student-id')); 
+        });
+
+        
+        if (selectedIds.length === 0) {
+            alert("Please select at least one student to delete.");
+            return;
+        }
+
+        if (confirm("Do you want to delete selected students?")) {
+
+            var deleteSettings = {
+                "url": "https://localhost:7005/api/StudentApi/selectdelete",
+                "method": "DELETE",
+                "data": JSON.stringify(selectedIds),
+                "contentType": "application/json",
+                "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') }
+            };
+
+            $.ajax(deleteSettings).done(function (response) {
+                // Reload the page after deletion
+                window.location.reload();
+            }).fail(function (jqXHR, textStatus, errorThrown) {
+                alert("Error deleting selected students: " + errorThrown);
+            });
+        }
+    });
+});
+
+
+
+
+
+
+</script>
+
+<br /><br />
+
+<a href="/SimpleAPI/Add" class="btn btn-danger">Add Employee</a>
+@* <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button> *@
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: Arial, sans-serif;
+        }
+        .table-container {
+            max-width: 1200px;
+            margin: 20px auto;
+        }
+        .table {
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .table th, .table td {
+            border: none;
+            font-size: 14px;
+            vertical-align: middle;
+        }
+        .table thead th {
+            background-color: #343a40;
+            color: #ffffff;
+            font-weight: bold;
+            text-align: center;
+        }
+        .table tbody tr:hover {
+            background-color: #f8f9fa;
+        }
+        .btn-edit, .btn-delete {
+            padding: 5px 10px;
+            font-size: 12px;
+            border-radius: 5px;
+        }
+        .btn-edit {
+            background-color: #007bff;
+            color: #fff;
+            border: 1px solid #007bff;
+        }
+        .btn-delete {
+            background-color: #dc3545;
+            color: #fff;
+            border: 1px solid #dc3545;
+        }
+        .btn-edit:hover, .btn-delete:hover {
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container table-container">
+    <h2 class="text-center mb-4">Employee List</h2>
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    @* <th>Select</th>  *@
+                    <th>Emp ID</th>
+                    <th>Emp Name</th>
+                    <th>Gender</th>
+                    <th>Birthdate</th>
+                    <th>Shift</th>
+                    <th>Dept</th>
+                    @* <th>Course</th> *@
+                    <th>Photo</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
+            </thead>
+            <tbody id="tableStudents">
+             
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+</body>
+</html>

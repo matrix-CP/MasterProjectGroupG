@@ -1,0 +1,137 @@
+@model MVC.Models.tblEmployee
+
+@{
+    ViewBag.Title = "Edit Employee";
+}
+
+<h2>Edit Employee</h2>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"
+    integrity="sha512-STof4xm1wgkfm7heWqFJVn58Hm3EtS31XFaagaa8VMReCXAkQnJZ+jEy8PCC/iT18dFy95WcExNHFTqLyp72eQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+    $(document).ready(function () {
+        var employeeId = @ViewBag.id;
+        if (employeeId > 0) {
+            LoadEmployeeDetails();
+        }
+    });
+
+    function LoadEmployeeDetails() {
+        var settings = {
+            "url": "https://localhost:7022/api/SimpleAPI/GetEmployee/" + @ViewBag.id,
+            "method": "GET",
+            "timeout": 0,
+            "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') }
+        };
+
+        $.ajax(settings).done(function (response) {
+            $("#c_empid").val(response.c_empid),
+            $("#c_empname").val(response.c_empname);
+            $("#c_dob").val(response.c_dob);
+            $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true),
+            $("#c_depart").val(response.c_depart),
+            $("input[name='c_shift']").prop("checked", false);
+            response.c_shift.split(',').forEach(function (shift) {
+                $("input[name='c_shift'][value='" + shift + "']").prop("checked", true);
+            });
+        });
+    }
+
+    function UpdateEmployee() {
+        var updateEmployee = {
+            c_empid: $("#c_empid").val(),
+            c_empname: $("#c_empname").val(),
+            c_dob: $("#c_dob").val(),
+            c_empgender: $("input[name='c_empgender']:checked").val(),
+            c_depart: $("#c_depart").val(),
+            c_shift: [],
+        };
+
+        // Populate the updateEmployee object with shifts
+        $("input[name='c_shift']:checked").each(function () {
+            updateEmployee.c_shift.push($(this).val());
+        });
+
+        var formData = new FormData();
+        formData.append("c_empid", updateEmployee.c_empid);
+        formData.append("c_empname", updateEmployee.c_empname);
+        formData.append("c_dob", updateEmployee.c_dob);
+        formData.append("c_empgender", updateEmployee.c_empgender);
+        formData.append("c_depart", updateEmployee.c_depart);
+
+        // Add shifts to formData
+        updateEmployee.c_shift.forEach(function (shift) {
+            formData.append("c_shift", shift);
+        });
+
+        var settings = {
+            "url": "https://localhost:7022/api/SimpleAPI/UpdateEmployee/",
+            "method": "PUT",
+            "timeout": 0,
+            "headers": {
+                "Authorization": 'Bearer ' + localStorage.getItem('token')
+            },
+            "data": formData,
+            "processData": false,
+            "contentType": false,
+        };
+        debugger
+        $.ajax(settings).done(function (response) {
+            alert("Employee updated successfully!");
+            window.location = "/SimpleAPI/Index";
+        });
+    }
+</script>
+
+<div class="form-horizontal">
+    <div class="form-group">
+        <div>
+            <input type="hidden" name="c_empid" id="c_empid" />
+        </div>
+
+        <div class="form-group">
+            <label for="c_empname">Employee Name</label>
+            <input type="text" name="c_empname" id="c_empname" class="form-control" />
+        </div>
+
+         <div class="form-group">
+            <label for="c_empgender">Gender</label>
+            <div>
+                <input type="radio" name="c_empgender" value="Male" id="male" /> <label for="male"> Male</label>
+                <input type="radio" name="c_empgender" value="Female" id="female" /> <label for="female">Female</label>
+                <input type="radio" name="c_empgender" value="Other" id="other" /> <label for="other"> Other</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="c_dob">Date of Birth</label>
+            <input type="date" name="c_dob" id="c_dob" class="form-control" />
+        </div>
+
+       <div class="form-group">
+            <label for="c_shift">Shifts</label>
+            <div>
+                <input type="checkbox" name="c_shift" value="A" id="shiftA" /> <label for="shiftA"> A</label>
+                <input type="checkbox" name="c_shift" value="M" id="shiftM" /> <label for="shiftM"> M</label>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="c_depart">Department</label>
+            <input type="text" name="c_depart" id="c_depart" class="form-control" />
+        </div>
+
+        <div class="form-group">
+            <label for="imgFile">Image:</label>
+            <input type="file" class="form-control" id="imgFile" name="imgFile">
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="button" value="Update Employee" onclick="UpdateEmployee()" class="btn btn-primary">
+            </div>
+        </div>
+    </div>
+</div>

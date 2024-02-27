@@ -8,25 +8,37 @@ using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
-    [Route("[controller]")]
+    // [Route("[controller]")]
     public class SimpleAPIController : Controller
     {
-        private readonly ILogger<SimpleAPIController> _logger;
+        // private readonly ILogger<SimpleAPIController> _logger;
 
-        public SimpleAPIController(ILogger<SimpleAPIController> logger)
-        {
-            _logger = logger;
-        }
+        // public SimpleAPIController(ILogger<SimpleAPIController> logger)
+        // {
+        //     _logger = logger;
+        // }
 
         public IActionResult Index()
         {
             return View();
         }
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public IActionResult Add()
         {
-            return View("Error!");
+            return View();
         }
+        public IActionResult Edit(int id)
+        {
+            ViewBag.id=id;
+            return View();
+        }
+        
+
+
+
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // public IActionResult Error()
+        // {
+        //     return View("Error!");
+        // }
     }
 }

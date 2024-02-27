@@ -1,0 +1,164 @@
+<!-- Dashboard.cshtml -->
+@model List<MVC.Models.tblEmployee>
+
+@{
+    ViewData["Title"] = "Dashboard";
+}
+
+<!-- Display a welcome message -->
+<h1>Welcome Admin</h1>
+
+<!-- Table to display employee details -->
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <th>User Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Edit form initially hidden, to be displayed on clicking Edit -->
+<div id="editForm" style="display:none;">
+    <h2>Edit Employee</h2>
+    <form id="EditEmployeeForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="empId">Employee ID:</label>
+            <input type="text" class="form-control" id="empId" name="empId" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empName">Employee Name:</label>
+            <input type="text" class="form-control" id="empName" name="empName" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empGender">Gender:</label>
+            <input type="text" class="form-control" id="empGender" name="empGender" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empDOB">Date of Birth:</label>
+            <input type="text" class="form-control" id="empDOB" name="empDOB" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empImage">Image:</label>
+            <input type="file" class="form-control" id="empImage" name="empImage" accept="image/*" disabled>
+            <img id="previewImage" style="max-width: 100px; max-height: 100px;" />
+        </div>
+        <div class="form-group">
+            <label for="empUID">User ID:</label>
+            <input type="text" class="form-control" id="empUID" name="empUID" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empDepartment">Department:</label>
+            <select class="form-control" id="empDepartment" name="empDepartment">
+                <option value="1">CEO</option>
+                <option value="2">Testing</option>
+                <option value="3">R&D</option>
+                <option value="4">Testing</option>
+                <option value="5">Development</option>
+                <option value="6">Design</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Shifts:</label>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="shift1" name="shift" value="M">
+                <label class="form-check-label" for="shift1">Morning</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="shift2" name="shift" value="A">
+                <label class="form-check-label" for="shift2">Afternoon</label>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" id="UpdateEmployeeButton">Update Employee</button>
+        <button type="button" class="btn btn-secondary" id="CancelEditButton">Cancel</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadData();
+            setInterval(loadData, 10000);
+
+            function loadData() {
+                $.ajax({
+                    url: '/MVCAjax/GetAllEmployeeDetails',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        // Reference to the table body
+                        var EmployeeTable = $('#EmployeeTable tbody');
+                        // Clear existing table rows
+                        EmployeeTable.empty();
+
+                        // Iterate through each employee data and populate the table
+                        data.forEach(function (emp) {
+                            var row = '<tr>';
+                            row += '<td>' + emp.c_empid + '</td>';
+                            row += '<td>' + emp.c_empname + '</td>';
+                            row += '<td>' + emp.c_empgender + '</td>';
+                            row += '<td>' + new Date(emp.c_dob).toLocaleDateString() + '</td>';
+                            row += '<td>' + emp.c_shift + '</td>';
+                            row += '<td>' + emp.depname + '</td>';
+                            row += '<td><img src="' + emp.c_img + '" alt="Employee Image" style="max-width: 100px; max-height: 100px;" /></td>';
+                            row += '<td>' + emp.c_uid + '</td>';
+                            row += '<td><a href="#" class="edit-link" data-id="' + emp.c_empid + '">Edit</a></td>';
+                            row += '</tr>';
+                            EmployeeTable.append(row);
+                        });
+
+                      
+                    }
+                });
+            }
+
+         
+
+            // Click event for Update Employee button
+            $('#UpdateEmployeeButton').click(function () {
+                // Add AJAX request to update the employee details
+                // Hide the edit form after updating
+                $('#editForm').hide();
+            });
+
+            $(document).on('click', '.edit-link', function(){
+                var empId = $(this).data('id');
+                  $('#editForm').show();
+                
+                $.ajax({
+                    url: '/MVCAjax/GetEmployee',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { id: empId },
+                    success: function (employee) {
+                        $('#empId').val(employee.c_empid);
+                        $('#empName').val(employee.c_empname);
+                        $('#empGender').val(employee.c_empgender);
+                        $('#empDOB').val(employee.c_dob);
+                        $('#empUID').val(employee.c_uid);
+                        $('#empDepartment').val(employee.depname);
+                        $('#empImage').val(employee.c_img);
+                        $('#previewImage').attr('src', employee.c_img);
+                        $('#shift1').prop('checked', employee.c_shift.includes('M'));
+                        $('#shift2').prop('checked', employee.c_shift.includes('A'));
+                    }
+                });
+            });
+            });
+        @* }); *@
+    </script>
+}

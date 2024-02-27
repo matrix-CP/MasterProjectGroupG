@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace MVC.Repostories
 {
-    public class EmployeeRepository : CommonRepository , IEmployeeRepository
+    public class EmployeeRepository : CommonRepository, IEmployeeRepository
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -29,13 +29,13 @@ namespace MVC.Repostories
 
         public void AddEmployee(tblEmployee employee)
         {
-            if(employee.imgFile != null && employee.imgFile.Length > 0)
+            if (employee.imgFile != null && employee.imgFile.Length > 0)
             {
                 var folderPath = "D://casepoint//master//MasterProjectGroupG//MVC//wwwroot//Images";
                 // var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
-                var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
+                var filePath = Guid.NewGuid().ToString() + employee.imgFile.FileName;
                 var fullPath = Path.Combine(folderPath, filePath);
-                if(!Directory.Exists(folderPath))
+                if (!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
                 }
@@ -44,7 +44,7 @@ namespace MVC.Repostories
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/"+filePath;
+                employee.c_img = "/Images/" + filePath;
 
             }
             else
@@ -64,8 +64,8 @@ namespace MVC.Repostories
             cmd.Parameters.AddWithValue("@shift", shifts);
             cmd.Parameters.AddWithValue("@dept", employee.c_depart);
             cmd.Parameters.AddWithValue("@img", employee.c_img);
-             cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
-           //cmd.Parameters.AddWithValue("@uid", 1);
+            cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+            //cmd.Parameters.AddWithValue("@uid", 1);
             cmd.ExecuteNonQuery();
             conn.Close();
         }
@@ -114,7 +114,7 @@ namespace MVC.Repostories
 
             cmd.CommandType = System.Data.CommandType.Text;
 
-            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, e.uid, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid";
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname, e.c_uid from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid";
             var dr = cmd.ExecuteReader();
             while (dr.Read())
             {
@@ -128,7 +128,7 @@ namespace MVC.Repostories
                     // c_depart = Convert.ToInt32(dr["c_depart"]),
                     c_img = dr["c_img"].ToString(),
                     depname = dr["c_depname"].ToString(),
-                    c_uid = Convert.ToInt32(dr["uid"])
+                    c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0
                 };
                 employees.Add(emp);
             }
@@ -144,7 +144,7 @@ namespace MVC.Repostories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname,e.c_uid from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
             cmd.Parameters.AddWithValue("@id", id);
             var dr = cmd.ExecuteReader();
             while (dr.Read())
@@ -156,6 +156,7 @@ namespace MVC.Repostories
                 employee.c_shift = dr["c_shift"].ToString().Split(",").ToList();
                 employee.c_depart = Convert.ToInt32(dr["c_depart"]);
                 employee.c_img = dr["c_img"].ToString();
+                employee.c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0;
 
             }
             conn.Close();
@@ -175,11 +176,36 @@ namespace MVC.Repostories
         }
 
 
+        public void UpdateEmployee(tblEmployee updatedEmployee)
+        {
+            try
+            {
+                conn.Open();
+
+                using (var cmd = new NpgsqlCommand())
+                {
+                    cmd.Connection = conn;
+                    cmd.CommandType = System.Data.CommandType.Text;
+
+                    // Update only specific fields (e.g., department and shift) based on your requirement
+                    cmd.CommandText = "UPDATE t_empmaster SET c_depart = @depart, c_shift = @shift WHERE c_empid = @empid";
+
+                    cmd.Parameters.AddWithValue("@depart", updatedEmployee.c_depart);
+                    cmd.Parameters.AddWithValue("@shift", string.Join(",", updatedEmployee.c_shift));
+                    cmd.Parameters.AddWithValue("@empid", updatedEmployee.c_empid);
+
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            finally
+            {
+                conn.Close();
+            }
+        }
 
 
 
-        
 
-        
+
     }
 }

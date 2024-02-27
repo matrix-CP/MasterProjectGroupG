@@ -87,6 +87,36 @@ namespace MVC.Controllers
             return Json("Employee Deleted Successfully");
         }
 
+        [HttpGet]
+        public IActionResult Dashboard()
+        {
+            return View();
+        }
+
+
+
+        [HttpGet]
+        public JsonResult GetAllEmployeeDetails()
+        {
+            List<tblEmployee> employees = _employeeRepository.GetAllEmployeeDetails();
+            return Json(employees);
+        }
+
+        [HttpGet]
+        public JsonResult GetEmployee(int id)
+        {
+            tblEmployee employee = _employeeRepository.GetEmployee(id);
+            return Json(employee);
+        }
+
+        
+        [HttpPost]
+        public JsonResult UpdateEmployee([FromBody] tblEmployee employee)
+        {
+            _employeeRepository.UpdateEmployee(employee);
+            return Json("Employee Updated Successfully");
+        }
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

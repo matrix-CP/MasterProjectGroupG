@@ -10,13 +10,13 @@ namespace MVC.Repostories
     {
         //  List<tblEmployee> FetchEmployeeDetails();
         void AddEmployee(tblEmployee employee);
-        
+
         List<tblEmployee> GetAllEmployee();
 
         List<tblEmployee> GetAllEmployeeDetails();
 
         tblEmployee GetEmployee(int id);
-
-        void DeleteEmployee(int id);
+        void UpdateEmployee(tblEmployee updatedEmployee);
+         void DeleteEmployee(int id);
+        }
     }
-}

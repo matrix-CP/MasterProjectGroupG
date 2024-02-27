@@ -12,6 +12,17 @@ builder.Services.AddSingleton<IEmployeeRepository,EmployeeRepository>();
 
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("MycorsPolicy", builder =>
+    {
+        builder
+         .AllowAnyOrigin()
+         .AllowAnyMethod()
+         .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +35,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 app.UseAuthorization();
+app.UseCors("MycorsPolicy");
 
 app.MapControllers();
 

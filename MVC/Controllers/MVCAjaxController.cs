@@ -1,31 +1,18 @@
-using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using MVC.Models;
 using MVC.Repostories;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System.Text.RegularExpressions;
-
 
 namespace MVC.Controllers
 {
-    // [Route("[controller]")]
     public class MVCAjaxController : Controller
     {
-        private readonly ILogger<MVCAjaxController> _logger;
-
         private readonly IUserRepository _userRepository;
-
         private readonly IEmployeeRepository _employeeRepository;
 
-        public MVCAjaxController(ILogger<MVCAjaxController> logger, IUserRepository userRepository, IEmployeeRepository employeeRepository)
+        public MVCAjaxController(IUserRepository userRepository, IEmployeeRepository employeeRepository)
         {
-            _logger = logger;
             _userRepository = userRepository;
             _employeeRepository = employeeRepository;
         }
@@ -33,15 +20,14 @@ namespace MVC.Controllers
         public IActionResult Index()
         {
             var session = HttpContext.Session;
-            if (string.IsNullOrEmpty(session.GetString("username")) || string.IsNullOrEmpty(session.GetString("email")) )
+            if (string.IsNullOrEmpty(session.GetString("username")) || string.IsNullOrEmpty(session.GetString("email")))
             {
                 return RedirectToAction("Login");
             }
 
-         
             return View();
-
         }
+
         public JsonResult GetAllEmployee()
         {
             List<tblEmployee> employees = _employeeRepository.GetAllEmployee();
@@ -73,9 +59,7 @@ namespace MVC.Controllers
             tblUser user1 = _userRepository.Login(user);
             if (user1.c_uid != 0)
             {
-                // HttpContext.Session.SetInt32("userid", user1.c_uid);
-                // HttpContext.Session.SetInt32("IsAuthenticated", 1);
-                return Json("Success"); // Change this line to return "Success"
+                return Json("Success");
             }
             else
             {
@@ -96,6 +80,12 @@ namespace MVC.Controllers
             return Json("Employee Added Successfully");
         }
 
+        [HttpPost]
+        public JsonResult DeleteEmployee(int id)
+        {
+            _employeeRepository.DeleteEmployee(id);
+            return Json("Employee Deleted Successfully");
+        }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()

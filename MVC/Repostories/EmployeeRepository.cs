@@ -105,6 +105,79 @@ namespace MVC.Repostories
 
         }
 
+        public List<tblEmployee> GetAllEmployeeDetails()
+        {
+            var employees = new List<tblEmployee>();
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+
+            cmd.CommandType = System.Data.CommandType.Text;
+
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, e.uid, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid";
+            var dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                var emp = new tblEmployee
+                {
+                    c_empid = Convert.ToInt32(dr["c_empid"]),
+                    c_empname = dr["c_empname"].ToString(),
+                    c_empgender = dr["c_empgender"].ToString(),
+                    c_dob = DateTime.Parse(dr["c_dob"].ToString()),
+                    c_shift = dr["c_shift"].ToString().Split(",").ToList(),
+                    // c_depart = Convert.ToInt32(dr["c_depart"]),
+                    c_img = dr["c_img"].ToString(),
+                    depname = dr["c_depname"].ToString(),
+                    c_uid = Convert.ToInt32(dr["uid"])
+                };
+                employees.Add(emp);
+            }
+            conn.Close();
+            return employees;
+
+        }
+
+        public tblEmployee GetEmployee(int id)
+        {
+            var employee = new tblEmployee();
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            var dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                employee.c_empid = Convert.ToInt32(dr["c_empid"]);
+                employee.c_empname = dr["c_empname"].ToString();
+                employee.c_empgender = dr["c_empgender"].ToString();
+                employee.c_dob = DateTime.Parse(dr["c_dob"].ToString());
+                employee.c_shift = dr["c_shift"].ToString().Split(",").ToList();
+                employee.c_depart = Convert.ToInt32(dr["c_depart"]);
+                employee.c_img = dr["c_img"].ToString();
+
+            }
+            conn.Close();
+            return employee;
+        }
+
+        public void DeleteEmployee(int id)
+        {
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "DELETE FROM t_empmaster WHERE c_empid = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            cmd.ExecuteNonQuery();
+            conn.Close();
+        }
+
+
+
+
+
         
 
         

@@ -12,5 +12,11 @@ namespace MVC.Repostories
         void AddEmployee(tblEmployee employee);
         
         List<tblEmployee> GetAllEmployee();
+
+        List<tblEmployee> GetAllEmployeeDetails();
+
+        tblEmployee GetEmployee(int id);
+
+        void DeleteEmployee(int id);
     }
 }

@@ -28,9 +28,20 @@
             <input type="checkbox" id="shift1" name="shift" value="M"> Morning
             <input type="checkbox" id="shift2" name="shift" value="A"> Afternoon
         </div>
-        <div class="form-group">
+        @* <div class="form-group">
             <label for="c_depart">Department:</label>
             <input type="text" class="form-control" id="depart" name="depart">
+        </div> *@
+        <div class="form-group">
+            <label for="c_depart">Department:</label>
+            <select class="form-control" id="depart" name="depart">
+                <option value="1">CEO</option>
+                <option value="2">Testing</option>
+                <option value="3">R&D</option>
+                <option value="4">Testing</option>
+                <option value="5">Development</option>
+                <option value="6">Design</option>
+            </select>
         </div>
         <div class="form-group">
             <label for="imgFile">Image:</label>
@@ -48,22 +59,22 @@
     <script>
         $(document).ready(function () {
             $("#AddEmployeeButton").click(function () {
-                @* var selectedShifts = [];
+        @* var selectedShifts = [];
                 $("input[name='shift']:checked").each(function () {
-                    selectedShifts.push($(this).val());
+                selectedShifts.push($(this).val());
                 });
                 var uploadfile=$('#imgFile').get(0);
                 var files=uploadfile.files;
                 var emp = {
-                    c_empname: $("#empname").val(),
-                    c_gender: $("input[name='empgender']:checked").val(),
-                    c_dob: $("#dob").val(),
-                    c_shift: selectedShifts.join(","),
-                    c_depart: $("#depart").val(),
-                    c_img: files[0]
+                c_empname: $("#empname").val(),
+                c_gender: $("input[name='empgender']:checked").val(),
+                c_dob: $("#dob").val(),
+                c_shift: selectedShifts.join(","),
+                c_depart: $("#depart").val(),
+                c_img: files[0]
                 }; *@
 
-                var formData = new FormData();
+                    var formData = new FormData();
                 var photoFile = $('#imgFile')[0].files[0];
                 formData.append("imgFile", photoFile);
                 formData.append("c_empname", $('#empname').val());

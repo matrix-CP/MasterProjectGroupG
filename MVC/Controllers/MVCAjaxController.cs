@@ -37,7 +37,15 @@ namespace MVC.Controllers
             {
                 return RedirectToAction("Login");
             }
+
+         
             return View();
+
+        }
+        public JsonResult GetAllEmployee()
+        {
+            List<tblEmployee> employees = _employeeRepository.GetAllEmployee();
+            return Json(employees);
         }
 
         [HttpGet]

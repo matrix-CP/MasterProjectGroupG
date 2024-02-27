@@ -1,5 +1,60 @@
-<h1> Welcome User</h1>
+@model List<MVC.Models.tblEmployee>
 
+<h1>Welcome User</h1>
 <h1>Welcome to the Dashboard, @Context.Session.GetString("username")!, @Context.Session.GetString("email")!</h1>
 
 <a asp-controller="MVCAjax" asp-action="AddEmployee">Add Your Details</a><br>
+
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <!-- <th>Action</th> -->
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            loadData();
+            setInterval(loadData, 10000);
+
+            function loadData() {
+                $.ajax({
+                    url: '/MVCAjax/GetAllEmployee',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var EmployeeTable = $('#EmployeeTable tbody');
+                        EmployeeTable.empty();
+                        data.forEach(function (emp) {
+                            var row = '<tr>';
+                            row += '<td>' + emp.c_empid + '</td>';
+                            row += '<td>' + emp.c_empname + '</td>';
+                            row += '<td>' + emp.c_empgender + '</td>';
+                            row += '<td>' + new Date(emp.c_dob).toLocaleDateString() + '</td>';
+                            row += '<td>' + emp.c_shift + '</td>';
+                            row += '<td>' + emp.depname + '</td>';
+                            row += '<td><img src="' + emp.c_img + '" alt="Employee Image" style="max-width: 100px; max-height: 100px;" /></td>';
+                            row += '</tr>';
+                            EmployeeTable.append(row);
+                        });
+                    }
+                });
+            }
+        });
+    </script>
+}

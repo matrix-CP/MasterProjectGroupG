@@ -64,10 +64,45 @@ namespace MVC.Repostories
             cmd.Parameters.AddWithValue("@shift", shifts);
             cmd.Parameters.AddWithValue("@dept", employee.c_depart);
             cmd.Parameters.AddWithValue("@img", employee.c_img);
-            // cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
-           cmd.Parameters.AddWithValue("@uid", 1);
+             cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+           //cmd.Parameters.AddWithValue("@uid", 1);
             cmd.ExecuteNonQuery();
             conn.Close();
+        }
+
+
+        public List<tblEmployee> GetAllEmployee()
+        {
+            var employees = new List<tblEmployee>();
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+
+            cmd.CommandType = System.Data.CommandType.Text;
+
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid where e.c_uid = @uid";
+            cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+            var dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                var emp = new tblEmployee
+                {
+                    c_empid = Convert.ToInt32(dr["c_empid"]),
+                    c_empname = dr["c_empname"].ToString(),
+                    c_empgender = dr["c_empgender"].ToString(),
+                    c_dob = DateTime.Parse(dr["c_dob"].ToString()),
+                    c_shift = dr["c_shift"].ToString().Split(",").ToList(),
+                    // c_depart = Convert.ToInt32(dr["c_depart"]),
+                    c_img = dr["c_img"].ToString(),
+                    depname = dr["c_depname"].ToString()
+
+
+                };
+                employees.Add(emp);
+            }
+            conn.Close();
+            return employees;
+
         }
 
         

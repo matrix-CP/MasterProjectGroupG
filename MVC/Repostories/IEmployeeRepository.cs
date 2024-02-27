@@ -11,5 +11,6 @@ namespace MVC.Repostories
         //  List<tblEmployee> FetchEmployeeDetails();
         void AddEmployee(tblEmployee employee);
         
+        List<tblEmployee> GetAllEmployee();
     }
 }

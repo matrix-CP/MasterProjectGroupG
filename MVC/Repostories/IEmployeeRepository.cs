@@ -8,7 +8,7 @@ namespace MVC.Repostories
 {
     public interface IEmployeeRepository
     {
-         List<tblEmployee> FetchEmployeeDetails();
+        //  List<tblEmployee> FetchEmployeeDetails();
         
     }
 }

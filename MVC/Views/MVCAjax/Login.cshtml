@@ -1,0 +1,53 @@
+@model MVC.Models.tblUser
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+
+<div>
+    <form id="LoginForm">
+        <div class="form-group">
+            <label for="c_uemail">Email:</label>
+            <input type="text" class="form-control" id="uemail" name="uemail">
+        </div>
+        <div class="form-group">
+            <label for="c_password">Password:</label>
+            <input type="Password" class="form-control" id="password" name="password">
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" id="LoginButton">Login</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@section Scripts
+{
+
+<script>
+    $(document).ready(function () {
+        $("#LoginButton").click(function () {
+            var login = {
+                c_uemail: $("#uemail").val(),
+                c_password: $("#password").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/MVCAjax/Login",
+                data: JSON.stringify(login),
+                contentType: "application/json; charset=utf-8",
+                success: function (data) {
+                    if (data == "Success") {
+                        window.location.href = "/MVCAjax/Index";
+                    }
+                    else {
+                        alert("Invalid Credentials");
+                    }
+                }
+            });
+        });
+    });
+</script>
+
+}

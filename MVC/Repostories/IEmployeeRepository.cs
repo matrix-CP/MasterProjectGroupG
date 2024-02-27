@@ -9,12 +9,12 @@ namespace MVC.Repostories
 {
     public interface IEmployeeRepository
     {
-         public bool Register(tblEmployee ct);
-          public void DeleteCity(int id);
-          public tblEmployee GetCityById(int id);
-           public void UpdateCity(tblEmployee city);
-           public List<tblEmployee> ViewCity();
-            public tblEmployee GetOneCity(int c_empid);
+         public bool Register(tblEmployee emp);
+          public void Deleteemp(int id);
+          public tblEmployee GetempById(int id);
+           public void Updateemp(tblEmployee emp);
+           public List<tblEmployee> Viewemp();
+
             public List<tblEmployee> Viewdept();
 
         

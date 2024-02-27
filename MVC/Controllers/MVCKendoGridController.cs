@@ -15,12 +15,12 @@ namespace MVC.Controllers
     public class MVCKendoGridController : Controller
     {
      private readonly NpgsqlConnection conn;
-      private readonly IEmployeeRepository _cityRepositories;
+      private readonly IEmployeeRepository _empRepositories;
        private readonly ILogger<MVCKendoGridController> _logger;
-       public MVCKendoGridController(ILogger<MVCKendoGridController> logger,IEmployeeRepository cityRepositories)
+       public MVCKendoGridController(ILogger<MVCKendoGridController> logger,IEmployeeRepository empRepositories)
         {
             _logger = logger;
-            _cityRepositories = cityRepositories;
+            _empRepositories = empRepositories;
         }
 
          public IActionResult Index()
@@ -34,17 +34,17 @@ namespace MVC.Controllers
 
 
             [Produces("application/json")]
-           public IActionResult ViewCity()
+           public IActionResult Viewemp()
             {
-                var citys = _cityRepositories.ViewCity();
-                return Json(citys);
+                var emps = _empRepositories.Viewemp();
+                return Json(emps);
             }
             
 
              public IActionResult Viewdept()
             {
-                var citys = _cityRepositories.Viewdept();
-                return Json(citys);
+                var emps = _empRepositories.Viewdept();
+                return Json(emps);
             }
 
             
@@ -54,24 +54,24 @@ namespace MVC.Controllers
                 }
 
         [HttpPost]
-        public IActionResult Register(tblEmployee ct)
+        public IActionResult Register(tblEmployee emp)
         {
-            _cityRepositories.Register(ct); 
-            return Json(new {success=true, message="Inserted", newCityId=ct.c_empid});
+            _empRepositories.Register(emp); 
+            return Json(new {success=true, message="Inserted", newEMPId=emp.c_empid});
         }
 
         [HttpGet]
         public IActionResult Edit(int id)
         {
-            var city = _cityRepositories.GetCityById(id);
-            return View(city);
+            var emp = _empRepositories.GetempById(id);
+            return View(emp);
         }
 
         [HttpPost]
-        public IActionResult Edit(tblEmployee city)
+        public IActionResult Edit(tblEmployee emp)
         {
-             _cityRepositories.UpdateCity(city);
-            return Json(new {success=true, Message="Updated Successfully", newCityId=city.c_empid});
+             _empRepositories.Updateemp(emp);
+            return Json(new {success=true, Message="Updated Successfully", newEMPId=emp.c_empid});
         }
 
 

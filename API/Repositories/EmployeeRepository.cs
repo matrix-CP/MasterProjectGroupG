@@ -10,19 +10,19 @@ namespace API.Repositories
 {
     public class EmployeeRepository : CommonRepository, IEmployeeRepository
     {
-         public bool Register(tblEmployee ct)
+         public bool Register(tblEmployee emp)
         {
             NpgsqlCommand cmd = new NpgsqlCommand();
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
             cmd.CommandText = "INSERT INTO t_empmaster(c_empname, c_empgender, c_dob, c_shift, c_depart, c_img)VALUES (@c_empname, @c_empgender, @c_dob, @c_shift, @c_depart, @c_img);";
-             cmd.Parameters.AddWithValue("@c_empname",ct.c_empname);
-                          cmd.Parameters.AddWithValue("@c_empgender",ct.c_empgender);
-                                       cmd.Parameters.AddWithValue("@c_dob",ct.c_dob.Date);
-                                                    cmd.Parameters.AddWithValue("@c_shift",ct.c_shift);
-                                                                 cmd.Parameters.AddWithValue("@c_depart",ct.c_depart);
-                                                                              cmd.Parameters.AddWithValue("@c_img",ct.c_img);
+             cmd.Parameters.AddWithValue("@c_empname",emp.c_empname);
+                          cmd.Parameters.AddWithValue("@c_empgender",emp.c_empgender);
+                                       cmd.Parameters.AddWithValue("@c_dob",emp.c_dob.Date);
+                                                    cmd.Parameters.AddWithValue("@c_shift",emp.c_shift);
+                                                                 cmd.Parameters.AddWithValue("@c_depart",emp.c_depart);
+                                                                              cmd.Parameters.AddWithValue("@c_img",emp.c_img);
              
             
             int rowsAffected = cmd.ExecuteNonQuery();
@@ -30,7 +30,7 @@ namespace API.Repositories
             return rowsAffected > 0;
         }
 
-           public void DeleteCity(int id)
+           public void Deleteemp(int id)
         {
             NpgsqlCommand cmd = new NpgsqlCommand();
             conn.Open();
@@ -42,9 +42,9 @@ namespace API.Repositories
             conn.Close();
         }
 
-         public tblEmployee GetCityById(int id)
+         public tblEmployee GetempById(int id)
         {
-            tblEmployee city = new tblEmployee();
+            tblEmployee emp = new tblEmployee();
             NpgsqlCommand cmd = new NpgsqlCommand();
             conn.Open();
             cmd.Connection = conn;
@@ -54,41 +54,41 @@ namespace API.Repositories
             NpgsqlDataReader dr = cmd.ExecuteReader();
             while(dr.Read())
             {
-                city.c_empid = Convert.ToInt32(dr["c_empid"]);
-                city.c_empname = dr["c_empname"].ToString();
-                city.c_empgender = dr["c_empgender"].ToString();
-                city.c_dob = DateTime.Parse(dr["c_dob"].ToString());
-                city.c_shift = dr["c_shift"].ToString();
-                 city.c_img = dr["c_img"].ToString();
-                  city.c_depart = Convert.ToInt32(dr["c_depart"]);
+                emp.c_empid = Convert.ToInt32(dr["c_empid"]);
+                emp.c_empname = dr["c_empname"].ToString();
+                emp.c_empgender = dr["c_empgender"].ToString();
+                emp.c_dob = DateTime.Parse(dr["c_dob"].ToString());
+                emp.c_shift = dr["c_shift"].ToString();
+                 emp.c_img = dr["c_img"].ToString();
+                  emp.c_depart = Convert.ToInt32(dr["c_depart"]);
             }
             conn.Close();
-            return city;
+            return emp;
         }
 
-         public void UpdateCity(tblEmployee city)
+         public void Updateemp(tblEmployee emp)
         {
             NpgsqlCommand cmd = new NpgsqlCommand();
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
             cmd.CommandText = "UPDATE t_empmaster SET c_empname = @c_empname ,c_empgender=@c_empgender ,c_dob=@c_dob,c_shift=@c_shift,c_img=@c_img,c_depart=@c_depart  WHERE c_empid = @c_empid";
-            cmd.Parameters.AddWithValue("@c_empid", city.c_empid);
-            cmd.Parameters.AddWithValue("@c_empname", city.c_empname);
-             cmd.Parameters.AddWithValue("@c_empgender", city.c_empgender);
-            cmd.Parameters.AddWithValue("@c_dob", city.c_dob);
-             cmd.Parameters.AddWithValue("@c_shift", city.c_shift);
-            cmd.Parameters.AddWithValue("@c_img", city.c_img);
-            cmd.Parameters.AddWithValue("@c_depart", city.c_depart);
+            cmd.Parameters.AddWithValue("@c_empid", emp.c_empid);
+            cmd.Parameters.AddWithValue("@c_empname", emp.c_empname);
+             cmd.Parameters.AddWithValue("@c_empgender", emp.c_empgender);
+            cmd.Parameters.AddWithValue("@c_dob", emp.c_dob);
+             cmd.Parameters.AddWithValue("@c_shift", emp.c_shift);
+            cmd.Parameters.AddWithValue("@c_img", emp.c_img);
+            cmd.Parameters.AddWithValue("@c_depart", emp.c_depart);
 
             cmd.ExecuteNonQuery();
             conn.Close();
         }
 
 
-         public List<tblEmployee> ViewCity()
+         public List<tblEmployee> Viewemp()
         {
-            var citys = new List<tblEmployee>();
+            var emps = new List<tblEmployee>();
             conn.Open();
 
             using var command = new NpgsqlCommand("SELECT * FROM t_empmaster;", conn);
@@ -108,49 +108,15 @@ namespace API.Repositories
                 c_img = reader["c_img"].ToString(),
                 c_depart = Convert.ToInt32(reader["c_depart"])
                 };
-                citys.Add(tblEmployee);
+                emps.Add(tblEmployee);
             }
             conn.Close();
-            return citys;
+            return emps;
         }
-
-
-
-
-    
-    public tblEmployee GetOneCity(int c_empid)
-    {
-        var city = new tblEmployee();
-        conn.Open();
-
-        var cmd = new NpgsqlCommand();
-        cmd.Connection = conn;
-
-        cmd.CommandType = System.Data.CommandType.Text;
-        cmd.CommandText = "SELECT * FROM t_empmaster WHERE c_empid = @c_empid";
-
-        cmd.Parameters.AddWithValue("@c_empid",c_empid);
-
-        using(var dr = cmd.ExecuteReader())
-        {
-            while(dr.Read())
-            {
-               city.c_empid = Convert.ToInt32(dr["c_empid"]);
-                city.c_empname = dr["c_empname"].ToString();
-                city.c_empgender = dr["c_empgender"].ToString();
-                city.c_dob = DateTime.Parse(dr["c_dob"].ToString());
-                city.c_shift = dr["c_shift"].ToString();
-                 city.c_img = dr["c_img"].ToString();
-                  city.c_depart = Convert.ToInt32(dr["c_depart"]);
-            }
-        }
-        conn.Close();
-        return city;
-    }
 
      public List<tblEmployee> Viewdept()
         {
-            var citys = new List<tblEmployee>();
+            var emps = new List<tblEmployee>();
             conn.Open();
 
             using var command = new NpgsqlCommand("SELECT c_depid , c_depname FROM t_departmaster;", conn);
@@ -159,17 +125,19 @@ namespace API.Repositories
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var City  = new tblEmployee
+                var EMP  = new tblEmployee
                 {
                   c_depid = Convert.ToInt32(reader["c_depid"]),
                  c_depname = reader["c_depname"].ToString(),
                     
                 };
-                citys.Add(City);
+                emps.Add(EMP);
             }
             conn.Close();
-            return citys;
+            return emps;
         }
+
+
 
         
     }

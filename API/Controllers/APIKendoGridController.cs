@@ -12,12 +12,12 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class APIKendoGridController : ControllerBase
     {
-         private readonly IEmployeeRepository _cityRepo;
+         private readonly IEmployeeRepository _empRepo;
        // private static string _uploadedFileName;
 
-        public APIKendoGridController(IEmployeeRepository cityRepo)
+        public APIKendoGridController(IEmployeeRepository empRepo)
         {
-            _cityRepo = cityRepo;
+            _empRepo = empRepo;
         }
 
          [HttpGet]
@@ -25,7 +25,7 @@ namespace API.Controllers
         public IActionResult GetAllItem()
         {
             
-            return Ok( _cityRepo.ViewCity());
+            return Ok( _empRepo.Viewemp());
         }
 
           [HttpGet]
@@ -33,44 +33,44 @@ namespace API.Controllers
         public IActionResult Viewdept()
         {
             
-            return Ok( _cityRepo.Viewdept());
+            return Ok( _empRepo.Viewdept());
         }
 
         [HttpPut]
         
         [Route("Register")]
-        public IActionResult Register([FromBody]tblEmployee ct)
+        public IActionResult Register([FromBody]tblEmployee emp)
         {
 
-            _cityRepo.Register(ct);            
-            return CreatedAtAction(nameof(GetCityById), new { id = ct.c_empid }, ct );
+            _empRepo.Register(emp);            
+            return CreatedAtAction(nameof(GetempById), new { id = emp.c_empid }, emp );
         }
 
          [HttpDelete]
         [Route("delete/{id}")]
-         public IActionResult DeleteCity(int id)
+         public IActionResult Deleteemp(int id)
         {
-            _cityRepo.DeleteCity(id);
+            _empRepo.Deleteemp(id);
             return Ok("Delete Successfully");
         }
 
          [HttpGet]
-        [Route("GetCityById/{id}")]
-         public IActionResult GetCityById(int id)
+        [Route("GetempById/{id}")]
+         public IActionResult GetempById(int id)
         {
-            var cities = _cityRepo.GetCityById(id);
-            if(cities == null)
+            var emp = _empRepo.GetempById(id);
+            if(emp == null)
             {
-                return NotFound("City not found");
+                return NotFound("emp not found");
             }
-            return Ok(cities);
+            return Ok(emp);
         }
 
          [HttpPut]
         [Route("edit/{id}")]
-         public IActionResult UpdateCity(int id,[FromBody] tblEmployee city)
+         public IActionResult Updateemp(int id,[FromBody] tblEmployee emp)
         {
-            _cityRepo.UpdateCity(city);
+            _empRepo.Updateemp(emp);
             return Ok("Update Successfully");
         }
 

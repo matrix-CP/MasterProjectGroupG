@@ -78,6 +78,13 @@ namespace MVC.Controllers
             return RedirectToAction("Admin");
         }
 
+         [HttpPost]
+        public IActionResult UserDelete(int id)
+        {
+            _empRepo.DeleteEmployee(id);
+            return RedirectToAction("Employee");
+        }
+
         [HttpGet]
         public IActionResult UpdateEmployee(int id)
         {
@@ -102,6 +109,14 @@ namespace MVC.Controllers
             var employee = _empRepo.GetEmployee(id);
             return View(employee);
         }
+
+        [HttpGet]
+        public IActionResult UserDeleteEmployee(int id)
+        {
+            var employee = _empRepo.GetEmployee(id);
+            return View(employee);
+        }
+
         [HttpGet]
         public IActionResult Details(int id)
         {

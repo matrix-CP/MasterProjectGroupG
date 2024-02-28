@@ -1,5 +1,4 @@
 @model MVC.Models.tblEmployee
-     
 
 <style>
        
@@ -100,11 +99,12 @@
 
          .addBtn {
             text-decoration: none;
-            color: #1BC3BB;
-            background-color: #22333B;
+            color: #c31b1b;
+            background-color: #3b2222;
             padding: 12px 16px;
             cursor:pointer;
-            margin-top:22px;
+            border:0;
+            margin-top:26px;
             border-radius: 8px;
         }
         
@@ -118,7 +118,7 @@
     <div class="box">
         <div class="base">
             <div class="title">
-                <h2>Details</h2>
+                <h2>Delete</h2>
                 @* <a href="#" class="addBtn">New Member</a> *@
             </div>
             <table class="table">
@@ -152,11 +152,12 @@
                         </tr>      
                 </tbody>
             </table>
-            
-                <a asp-action="UserUpdateEmployee" asp-route-id="@Model.c_empid" class="addBtn">Edit</a>
-    
+            <form asp-action="UserDelete" asp-route-id="@Model.c_empid">
+                <input type="submit" class="addBtn" value="Delete"/>
+            </form>
         </div>
     </div>
+
 
 
 @* <div>
@@ -186,8 +187,10 @@
             }
         </tbody>
     </table>
-    <a asp-action="UpdateEmployee" class="btn btn-success" asp-route-id="@Model.c_empid">Edit</a>
-    <a asp-action="Admin" class="btn btn-primary" asp-route-id="@Model.c_empid">Back</a>
+    <form asp-action="Delete" asp-route-id="@Model.c_empid" >
+        <input type="submit" class="btn btn-danger" value="Delete"/>
+        <a asp-action="Admin" class="btn btn-primary" asp-route-id="@Model.c_empid">Back</a>
+    </form>
 </div> *@
 
  

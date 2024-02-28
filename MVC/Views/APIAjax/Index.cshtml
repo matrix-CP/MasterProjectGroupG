@@ -1,0 +1,184 @@
+@model List<API.Models.tblEmployee>
+
+<h1>Welcome User</h1>
+@{
+    var username = Context.Session.GetString("username");
+    var email = Context.Session.GetString("email");
+}
+<a asp-controller="MVCAjax" asp-action="login" class="btn btn-warning">Logout</a>
+
+<button id="showFormBtn" class="btn btn-info">Add Your Details</button><br>
+
+<div id="addEmployeeFormContainer" style="display: none;">
+    <h2>Add Employee</h2>
+    <form id="AddEmployeeForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="c_empname">Employee Name:</label>
+            <input type="text" class="form-control" id="empname" name="empname" value="@username" readonly>
+        </div>
+        <div class="form-group">
+            <label>Gender:</label>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="male" name="empgender" value="Male">
+                <label class="form-check-label" for="male">Male</label>
+            </div>
+            <div class="form-check">
+                <input type="radio" class="form-check-input" id="female" name="empgender" value="Female">
+                <label class="form-check-label" for="female">Female</label>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="c_dob">Date of Birth:</label>
+            <input type="date" class="form-control" id="dob" name="dob">
+        </div>
+        <div class="form-group">
+            <label for="c_shift">Shifts:</label>
+            <input type="checkbox" id="shift1" name="shift" value="M"> Morning
+            <input type="checkbox" id="shift2" name="shift" value="A"> Afternoon
+        </div>
+ 
+        <div class="form-group">
+            <div>
+                <label>Department</label>
+                <select class="form-control" id="depart" name="depart">
+                    <option value="">Select Department</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label for="imgFile">Image:</label>
+            <input type="file" class="form-control" id="imgFile" name="imgFile">
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" id="AddEmployeeButton">Add Employee</button>
+    </form>
+</div>
+
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            $("#showFormBtn").click(function () {
+                $("#addEmployeeFormContainer").toggle();
+            });
+
+            $("#AddEmployeeButton").click(function () {
+                var formData = new FormData();
+                var photoFile = $('#imgFile')[0].files[0];
+                formData.append("imgFile", photoFile);
+                formData.append("c_empname", $('#empname').val());
+                formData.append("c_dob", $('#dob').val());
+                formData.append("c_empgender", $('input[name="empgender"]:checked').val());
+                formData.append("c_depart", $('#depart').val());
+                formData.append("c_img", "a");
+                formData.append("c_shift", $('input[name="shift"]:checked').map(function () { return $(this).val(); }).get().join());
+
+                $.ajax({
+                    url: 'https://localhost:7022/api/AjaxAPI/AddEmployee',
+                    type: 'POST',
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (data) {
+                        alert("Employee added successfully!");
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error adding employee: " + error);
+                    }
+                });
+            });
+
+            loadData();
+            setInterval(loadData, 10000);
+
+            function loadData() {
+                $.ajax({
+                    url: 'https://localhost:7022/api/AjaxAPI/GetEmployee',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var EmployeeTable = $('#EmployeeTable tbody');
+                        EmployeeTable.empty();
+                        data.forEach(function (emp) {
+                            var row = '<tr>';
+                            row += '<td>' + emp.c_empid + '</td>';
+                            row += '<td>' + emp.c_empname + '</td>';
+                            row += '<td>' + emp.c_empgender + '</td>';
+                            row += '<td>' + new Date(emp.c_dob).toLocaleDateString() + '</td>';
+                            row += '<td>' + emp.c_shift + '</td>';
+                            row += '<td>' + emp.depname + '</td>';
+                            row += '<td><img src="' + emp.c_img + '" alt="Employee Image" style="max-width: 100px; max-height: 100px;" /></td>';
+                            row += '<td><button class="btn btn-danger delete" data-id="' + emp.c_empid + '">Delete</button></td>';
+                            row += '</tr>';
+                            EmployeeTable.append(row);
+                        });
+                    }
+                });
+            }
+
+            $.ajax({
+                url: 'https://localhost:7022/api/AjaxAPI/GetDepartments',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (Array.isArray(data)) {
+                        var dropdown = $('#depart');
+                        dropdown.empty().append($('<option value="">Select Department</option>'));
+                        data.forEach(function (department) {
+                            dropdown.append($('<option>').val(department.value).text(department.text));
+                        });
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching departments:', status, error);
+                }
+            });
+
+            $('#EmployeeTable').on('click', '.delete', function () {
+                var c_empid = $(this).data('id');
+
+                if (confirm('Are you sure you want to delete this book?')) {
+                    $.ajax({
+                        url: 'https://localhost:7022/api/AjaxAPI/DeleteEmployee' + c_empid,
+                        type: 'POST',
+                        success: function (data) {
+                            console.log('Delete success:', data);
+                            loadData();
+                            alert("Employee Deleted Successfully");
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Delete error:', error);
+                            alert('Error deleting Employee. Please check the console for details.');
+                        }
+                    });
+                }
+            });
+
+        });
+    </script>
+}

@@ -150,10 +150,15 @@ namespace MVC.Controllers
             return Json("Employee Updated Successfully");
         }
 
+        
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View("Error!");
+
         }
+
+
     }
 }

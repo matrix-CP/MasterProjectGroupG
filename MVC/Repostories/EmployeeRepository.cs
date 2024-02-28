@@ -6,6 +6,7 @@ using MVC.Models;
 using Npgsql;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace MVC.Repostories
 {
@@ -114,7 +115,7 @@ namespace MVC.Repostories
 
             cmd.CommandType = System.Data.CommandType.Text;
 
-            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname, e.c_uid from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid";
+            cmd.CommandText = "SELECT e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname, e.c_uid, u.c_uname FROM t_empmaster e JOIN t_departmaster d ON e.c_depart = d.c_depid JOIN t_usermaster u ON e.c_uid = u.c_uid";
             var dr = cmd.ExecuteReader();
             while (dr.Read())
             {
@@ -128,7 +129,8 @@ namespace MVC.Repostories
                     // c_depart = Convert.ToInt32(dr["c_depart"]),
                     c_img = dr["c_img"].ToString(),
                     depname = dr["c_depname"].ToString(),
-                    c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0
+                    // c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0,
+                    c_username = dr["c_uname"].ToString()
                 };
                 employees.Add(emp);
             }
@@ -144,7 +146,7 @@ namespace MVC.Repostories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname,e.c_uid from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+            cmd.CommandText = "SELECT e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname, e.c_uid, u.c_uname FROM t_empmaster e JOIN t_departmaster d ON e.c_depart = d.c_depid JOIN t_usermaster u ON e.c_uid = u.c_uid WHERE c_empid = @id";
             cmd.Parameters.AddWithValue("@id", id);
             var dr = cmd.ExecuteReader();
             while (dr.Read())
@@ -156,7 +158,8 @@ namespace MVC.Repostories
                 employee.c_shift = dr["c_shift"].ToString().Split(",").ToList();
                 employee.c_depart = Convert.ToInt32(dr["c_depart"]);
                 employee.c_img = dr["c_img"].ToString();
-                employee.c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0;
+                // employee.c_uid = dr["c_uid"] != DBNull.Value ? Convert.ToInt32(dr["c_uid"]) : 0;
+                employee.c_username = dr["c_uname"].ToString(); 
 
             }
             conn.Close();
@@ -180,19 +183,45 @@ namespace MVC.Repostories
         {
             try
             {
+
+                if (updatedEmployee.imgFile != null && updatedEmployee.imgFile.Length > 0)
+                {
+                    var folderPath = "D://casepoint//master//MasterProjectGroupG//MVC//wwwroot//Images";
+                    // var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
+                    var filePath = Guid.NewGuid().ToString() + updatedEmployee.imgFile.FileName;
+                    var fullPath = Path.Combine(folderPath, filePath);
+                    if (!Directory.Exists(folderPath))
+                    {
+                        Directory.CreateDirectory(folderPath);
+                    }
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        updatedEmployee.imgFile.CopyTo(stream);
+                    }
+
+                    updatedEmployee.c_img = "/Images/" + filePath;
+
+                }
+                else
+                {
+                    updatedEmployee.c_img = GetExistingPath(updatedEmployee.c_empid);
+                }
                 conn.Open();
 
                 using (var cmd = new NpgsqlCommand())
                 {
                     cmd.Connection = conn;
                     cmd.CommandType = System.Data.CommandType.Text;
+                    cmd.CommandText = "UPDATE t_empmaster SET c_empname = @name, c_empgender = @gender, c_dob = @dob, c_img = @img, c_depart = @depart, c_shift = @shift WHERE c_empid = @empid";
 
-                    // Update only specific fields (e.g., department and shift) based on your requirement
-                    cmd.CommandText = "UPDATE t_empmaster SET c_depart = @depart, c_shift = @shift WHERE c_empid = @empid";
-
+                    cmd.Parameters.AddWithValue("@name", updatedEmployee.c_empname);
+                    cmd.Parameters.AddWithValue("@gender", updatedEmployee.c_empgender);
+                    cmd.Parameters.AddWithValue("@dob", updatedEmployee.c_dob);
+                    cmd.Parameters.AddWithValue("@img", updatedEmployee.c_img);
                     cmd.Parameters.AddWithValue("@depart", updatedEmployee.c_depart);
                     cmd.Parameters.AddWithValue("@shift", string.Join(",", updatedEmployee.c_shift));
                     cmd.Parameters.AddWithValue("@empid", updatedEmployee.c_empid);
+                    cmd.Parameters.AddWithValue("@uid", updatedEmployee.c_uid);
 
                     cmd.ExecuteNonQuery();
                 }
@@ -202,6 +231,44 @@ namespace MVC.Repostories
                 conn.Close();
             }
         }
+
+        public string GetExistingPath(int id)
+        {
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select c_img from t_empmaster WHERE c_empid = @id";
+            cmd.Parameters.AddWithValue("@id", id);
+            var imgPath = cmd.ExecuteScalar().ToString();
+            conn.Close();
+            return imgPath;
+        }
+
+        public List<SelectListItem> GetDepartments()
+        {
+            var departments = new List<SelectListItem>();
+            var cmd = new NpgsqlCommand();
+            conn.Open();
+            cmd.Connection = conn;
+            cmd.CommandType = System.Data.CommandType.Text;
+            cmd.CommandText = "select * from t_departmaster";
+            var dr = cmd.ExecuteReader();
+            while (dr.Read())
+            {
+                var dep = new SelectListItem
+                {
+                    Text = dr["c_depname"].ToString(),
+                    Value = dr["c_depid"].ToString()
+                };
+                departments.Add(dep);
+            }
+            conn.Close();
+            return departments;
+        }
+
+
+
 
 
 

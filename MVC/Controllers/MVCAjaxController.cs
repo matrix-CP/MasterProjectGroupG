@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using MVC.Models;
 using MVC.Repostories;
 
@@ -53,19 +54,38 @@ namespace MVC.Controllers
             return View();
         }
 
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            var session = HttpContext.Session;
+            session.Clear();
+            return RedirectToAction("Login");
+        }
+
         [HttpPost]
         public JsonResult Login([FromBody] tblUser user)
         {
             tblUser user1 = _userRepository.Login(user);
+
             if (user1.c_uid != 0)
             {
-                return Json("Success");
+                if (user1.c_role == "admin")
+                {
+                    // For admin user
+                    return Json("Admin");
+                }
+                else
+                {
+                    // For other users
+                    return Json("Success");
+                }
             }
             else
             {
                 return Json("Invalid Username or Password");
             }
         }
+
 
         [HttpGet]
         public IActionResult AddEmployee()
@@ -90,6 +110,12 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Dashboard()
         {
+            var session = HttpContext.Session;
+            if (string.IsNullOrEmpty(session.GetString("username")) || string.IsNullOrEmpty(session.GetString("email")))
+            {
+                return RedirectToAction("Login");
+            }
+
             return View();
         }
 
@@ -109,9 +135,16 @@ namespace MVC.Controllers
             return Json(employee);
         }
 
-        
+        [HttpGet]
+        public JsonResult GetDepartments()
+        {
+            List<SelectListItem> departments = _employeeRepository.GetDepartments();
+            return Json(departments);
+        }
+
+
         [HttpPost]
-        public JsonResult UpdateEmployee([FromBody] tblEmployee employee)
+        public JsonResult UpdateEmployee([FromForm] tblEmployee employee)
         {
             _employeeRepository.UpdateEmployee(employee);
             return Json("Employee Updated Successfully");

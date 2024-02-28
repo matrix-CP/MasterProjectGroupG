@@ -5,9 +5,9 @@
     var username = Context.Session.GetString("username");
     var email = Context.Session.GetString("email");
 }
-<a asp-controller="MVCAjax" asp-action="login">Logout</a>
+<a asp-controller="MVCAjax" asp-action="login" class="btn btn-warning">Logout</a>
 
-<button id="showFormBtn">Add Your Details</button><br>
+<button id="showFormBtn" class="btn btn-info">Add Your Details</button><br>
 
 <div id="addEmployeeFormContainer" style="display: none;">
     <h2>Add Employee</h2>

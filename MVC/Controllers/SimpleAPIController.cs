@@ -26,9 +26,25 @@ namespace MVC.Controllers
         {
             return View();
         }
+        public IActionResult AddEmployee()
+        {
+            return View();
+        }
         public IActionResult Edit(int id)
         {
             ViewBag.id=id;
+            return View();
+        }
+        public IActionResult Login()
+        {
+            return View();
+        }
+        public IActionResult Register()
+        {
+            return View();
+        }
+        public IActionResult Employee()
+        {
             return View();
         }
         

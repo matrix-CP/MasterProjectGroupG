@@ -13,12 +13,51 @@ namespace API.Controllers
     [Route("api/[controller]")]
     public class SimpleAPIController : ControllerBase
     {
+        private readonly ILogger<SimpleAPIController> _logger;
         private readonly IEmployeeRepository _emprepo;
         private readonly IUserRepository _userrepo;
-        public SimpleAPIController(IEmployeeRepository emprepo, IUserRepository userrepo)
+        public SimpleAPIController(ILogger<SimpleAPIController> logger, IEmployeeRepository emprepo, IUserRepository userrepo)
         {
+            _logger = logger;
             _emprepo = emprepo; 
             _userrepo = userrepo; 
+        }
+
+        // [HttpGet]
+        // public IActionResult Login()
+        // {
+        //     return View();
+        // }
+
+        [HttpPost("Login")]
+        public IActionResult Login([FromBody]tblUser user)
+        {
+            tblUser users = _userrepo.Login(user);
+            Console.WriteLine(users != null);
+            if(users != null)
+            {
+                if(users.c_role.Equals("user"))
+                {
+                    return Ok("Employee");
+                } else{
+                    return Ok("Admin");
+                } 
+            }
+            return Ok("Invalid Credentials!"); 
+        }
+
+
+        // [HttpGet]
+        // public IActionResult Register()
+        // {
+        //     return View();
+        // }
+
+        [HttpPost("Register")]
+        public IActionResult Register([FromBody]tblUser user)
+        {
+            _userrepo.Register(user);
+            return Ok(true);
         }
 
         [HttpGet("GetAllEmployee")]

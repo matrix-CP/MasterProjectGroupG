@@ -25,7 +25,7 @@ namespace API.Repositories
         }
         public tblUser Login(tblUser user)
         {
-            tblUser user1 = new tblUser();
+            tblUser user1 = null;
             conn.Open();
             using (var cmd = new NpgsqlCommand("SELECT c_uid, c_uname, c_uemail, c_password, c_role FROM public.t_usermaster WHERE c_uemail=@uemail AND c_password=@password;",conn))
             {
@@ -37,6 +37,7 @@ namespace API.Repositories
 
                 if (data.Rows.Count == 1)
                 {
+                    user1=new tblUser();
                     user1.c_uid = Convert.ToInt32(data.Rows[0]["c_uid"]);
                     user1.c_uname = data.Rows[0]["c_uname"].ToString();
                     user1.c_uemail = data.Rows[0]["c_uemail"].ToString();

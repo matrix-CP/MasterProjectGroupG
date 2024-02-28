@@ -89,10 +89,13 @@
                     contentType: false,
 
                     success: function (data) {
+                        debugger
                         if(data){
                             alert("Employee added successfully!");
-                            debugger
-                            window.location="./Index";
+                            setTimeout(function(){
+                                window.location.href="/SimpleAPI/Index";
+                            },1000);
+                            
                         }
                         else{
                             alert("Some error Occured!");

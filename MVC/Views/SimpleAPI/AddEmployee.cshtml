@@ -1,0 +1,40 @@
+@model MVC.Models.tblEmployee
+
+<div>
+    <h2>Add Employee</h2>
+    <form asp-action="AddEmployee" enctype="multipart/form-data">
+        <div class="form-group">
+            <p>Employee Name</p>
+            <input class="form-control" type="text" asp-for="c_empname">
+        </div>
+        <div>
+            <p>Employee Gender</p>
+            <div style="display: flex; gap:20px; align-items:center;">
+                <input type="radio" asp-for="c_empgender" value="Male">
+                <p>Male</p>
+                <input type="radio" asp-for="c_empgender" value="Female">
+                <p>Female</p>
+                <input type="radio" asp-for="c_empgender" value="Other">
+                <p>Other</p>
+            </div>
+        </div>
+        <div>
+            <p>Employee Dob</p>
+            <input class="form-control" type="date" asp-for="c_dob">
+        </div>
+        <div>
+            <p>Shift</p>
+            <input type="checkbox" name="c_shift" value="A">A
+            <input type="checkbox" name="c_shift" value="M">M
+        </div>
+        <div class="form-group">
+            <p>Department</p>
+            <select asp-for="c_depart" asp-items="@Model.depList"></select>
+        </div>
+        <div class="form-group">
+            <p>Employee Pic</p>
+            <input class="form-control" type="file" asp-for="imgFile">
+        </div>
+        <input class="btn btn-success" type="submit" value="Add Employee">
+    </form>
+</div>

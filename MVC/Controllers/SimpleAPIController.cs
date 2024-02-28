@@ -26,10 +26,7 @@ namespace MVC.Controllers
         {
             return View();
         }
-        public IActionResult AddEmployee()
-        {
-            return View();
-        }
+    
         public IActionResult Edit(int id)
         {
             ViewBag.id=id;

@@ -37,6 +37,7 @@
             $.each(response.c_shift, function(index, value) {
                     $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
             });
+            $('#imageupload').attr('src', response.c_img);
         });
             
     }
@@ -68,7 +69,7 @@
         updateEmployee.c_shift.forEach(function (shift) {
             formData.append("c_shift", shift);
         });
-
+        debugger
         var settings = {
             "url": "https://localhost:7022/api/SimpleAPI/UpdateEmployee/",
             "method": "PUT",
@@ -135,12 +136,15 @@
         <div class="form-group">
             <label for="imgFile">Image:</label>
             <input type="file" class="form-control" id="imgFile" name="imgFile">
+            <br>
+            <img src="" id="imageupload" width="200">
         </div>
-
+        <br>
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="button" value="Update Employee" onclick="UpdateEmployee()" class="btn btn-primary">
             </div>
+            
         </div>
     </div>
 </div>

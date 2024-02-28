@@ -28,7 +28,7 @@ namespace MVC.Repostories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public void AddEmployee(tblEmployee employee)
+        public void AddEmployeeDetails(tblEmployee employee)
         {
             if (employee.imgFile != null && employee.imgFile.Length > 0)
             {
@@ -72,7 +72,7 @@ namespace MVC.Repostories
         }
 
 
-        public List<tblEmployee> GetAllEmployee()
+        public List<tblEmployee> GetAllEmployeeUser()
         {
             var employees = new List<tblEmployee>();
             var cmd = new NpgsqlCommand();
@@ -106,7 +106,7 @@ namespace MVC.Repostories
 
         }
 
-        public List<tblEmployee> GetAllEmployeeDetails()
+        public List<tblEmployee> GetAllEmployeeDetailsAdmin()
         {
             var employees = new List<tblEmployee>();
             var cmd = new NpgsqlCommand();
@@ -139,7 +139,7 @@ namespace MVC.Repostories
 
         }
 
-        public tblEmployee GetEmployee(int id)
+        public tblEmployee GetEmployeeAdmin(int id)
         {
             var employee = new tblEmployee();
             var cmd = new NpgsqlCommand();
@@ -179,7 +179,7 @@ namespace MVC.Repostories
         }
 
 
-        public void UpdateEmployee(tblEmployee updatedEmployee)
+        public void UpdateEmployeeAdmin(tblEmployee updatedEmployee)
         {
             try
             {

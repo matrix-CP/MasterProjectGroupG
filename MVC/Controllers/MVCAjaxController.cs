@@ -31,7 +31,7 @@ namespace MVC.Controllers
 
         public JsonResult GetAllEmployee()
         {
-            List<tblEmployee> employees = _employeeRepository.GetAllEmployee();
+            List<tblEmployee> employees = _employeeRepository.GetAllEmployeeUser();
             return Json(employees);
         }
 
@@ -96,7 +96,7 @@ namespace MVC.Controllers
         [HttpPost]
         public JsonResult AddEmployee([FromForm] tblEmployee employee)
         {
-            _employeeRepository.AddEmployee(employee);
+            _employeeRepository.AddEmployeeDetails(employee);
             return Json("Employee Added Successfully");
         }
 
@@ -124,14 +124,14 @@ namespace MVC.Controllers
         [HttpGet]
         public JsonResult GetAllEmployeeDetails()
         {
-            List<tblEmployee> employees = _employeeRepository.GetAllEmployeeDetails();
+            List<tblEmployee> employees = _employeeRepository.GetAllEmployeeDetailsAdmin();
             return Json(employees);
         }
 
         [HttpGet]
         public JsonResult GetEmployee(int id)
         {
-            tblEmployee employee = _employeeRepository.GetEmployee(id);
+            tblEmployee employee = _employeeRepository.GetEmployeeAdmin(id);
             return Json(employee);
         }
 
@@ -146,7 +146,7 @@ namespace MVC.Controllers
         [HttpPost]
         public JsonResult UpdateEmployee([FromForm] tblEmployee employee)
         {
-            _employeeRepository.UpdateEmployee(employee);
+            _employeeRepository.UpdateEmployeeAdmin(employee);
             return Json("Employee Updated Successfully");
         }
 

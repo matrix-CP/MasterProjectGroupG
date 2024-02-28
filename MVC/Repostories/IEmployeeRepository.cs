@@ -10,14 +10,14 @@ namespace MVC.Repostories
     public interface IEmployeeRepository
     {
         //  List<tblEmployee> FetchEmployeeDetails();
-        void AddEmployee(tblEmployee employee);
+        void AddEmployeeDetails(tblEmployee employee);
 
-        List<tblEmployee> GetAllEmployee();
+        List<tblEmployee> GetAllEmployeeUser();
 
-        List<tblEmployee> GetAllEmployeeDetails();
+        List<tblEmployee> GetAllEmployeeDetailsAdmin();
 
-        tblEmployee GetEmployee(int id);
-        void UpdateEmployee(tblEmployee updatedEmployee);
+        tblEmployee GetEmployeeAdmin(int id);
+        void UpdateEmployeeAdmin(tblEmployee updatedEmployee);
         void DeleteEmployee(int id);
         List<SelectListItem> GetDepartments();
         }

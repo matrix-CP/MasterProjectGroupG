@@ -10,14 +10,12 @@ namespace MVC.Repostories
     {
         protected NpgsqlConnection conn;
 
-        public CommonRepository(){
-            
-            IConfiguration myConfig = new ConfigurationBuilder()
-            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
-            .AddJsonFile("appsettings.json")
-            .Build();
 
-            conn = new NpgsqlConnection(myConfig.GetConnectionString("pgconn"));
+        public CommonRepository()
+        {
+            IConfiguration config = new ConfigurationBuilder().SetBasePath(AppDomain.CurrentDomain.BaseDirectory).AddJsonFile("appsettings.json").Build();
+            conn = new NpgsqlConnection(config.GetConnectionString("pgconn"));
+
         }
     }
 }

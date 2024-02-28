@@ -1,0 +1,196 @@
+@model MVC.Models.tblEmployee
+
+<style>
+       
+        @@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        *{
+            font-family: "Poppins", sans-serif;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body{
+            background-color: #17181C;
+        }
+        .box{
+            display: flex;
+            justify-content: center;
+            align-items: start;
+            background-color: #17181C;
+            width: 100%;
+            height: 100vh;
+        }
+
+        .base{
+            width: 80%;
+            overflow: hidden;
+            margin-top: 60px;
+            border-radius: 16px;
+            padding: 32px;
+            backdrop-filter: blur(100px);
+            background-color: #38384644;
+        }
+        .title{
+            color: rgba(255, 255, 255, 0.732);
+            padding: 2%;
+            display: flex;
+            justify-content: space-between;
+        }
+        h2{
+            font-weight: 400;
+        }
+
+        .addBtn {
+            text-decoration: none;
+            color: #1BC3BB;
+            background-color: #22333B;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        table{
+            width: 100%;
+            color: rgba(255, 255, 255, 0.675);
+            border-collapse: collapse;
+            
+        }
+
+       th{
+        text-align: start;
+        font-family: "Poppins", sans-serif;
+        font-weight: 400;
+        font-style: normal;
+      
+        border-bottom: 2px solid rgba(255, 255, 255, 0.084);
+        padding: 22px;
+        padding-bottom: 40px;
+       }
+
+        td{
+          
+            padding: 16px 24px;
+            font-family: "Poppins", sans-serif;
+            font-weight: 300;
+          
+            font-style: normal;
+            
+        }
+
+        .img{
+            width: 65px;
+            height: 65px;
+            border-radius: 16px;
+            object-fit: cover;
+        }
+       
+        .stripe{
+            border-bottom: 2px solid rgba(255, 255, 255, 0.084);
+        }
+        .icon{
+            width: 38px;
+            height: 38px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 8px;
+            background-color: #383841;
+        }
+
+         .addBtn {
+            text-decoration: none;
+            color: #c31b1b;
+            background-color: #3b2222;
+            padding: 12px 16px;
+            cursor:pointer;
+            border:0;
+            margin-top:26px;
+            border-radius: 8px;
+        }
+        
+        .icon-group{
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+    </style>
+
+    <div class="box">
+        <div class="base">
+            <div class="title">
+                <h2>Delete</h2>
+                @* <a href="#" class="addBtn">New Member</a> *@
+            </div>
+            <table class="table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>PIC</th>
+                    <th>NAME</th>
+                    <th>GENDER</th>
+                    <th>DOB</th>
+                    <th>SHIFT</th>
+                    <th>DEPARTMENT</th>
+                  </tr>
+                </thead>
+                <tbody>
+                         <tr class="stripe">
+                            <td>@Model.c_empid</td>
+                            <td><img class="img" src= @Model.c_img asp-for="c_img"></td>
+                            <td>@Model.c_empname</td>
+                            <td>@Model.c_empgender</td>
+                            <td>@Model.c_dob.ToString().Substring(0,10)</td>
+                            <td>@string.Join(',',Model.c_shift)</td>
+                            <td>@Model.depname</td>
+                            @* <td>
+                                <div class="icon-group">
+                                  <a asp-action="Details" class="icon" asp-route-id="@emp.c_empid" ><img width="18px" src="https://static-00.iconduck.com/assets.00/info-icon-2048x2048-tcgtx810.png" alt=""></a>
+                                   <a asp-action="UpdateEmployee" class="icon" asp-route-id="@emp.c_empid"><img width="18px" src="https://cdn-icons-png.flaticon.com/512/3597/3597075.png" alt=""></a>
+                                    <a asp-action="DeleteEmployee" class="icon" asp-route-id="@emp.c_empid" ><img width="18px" src="https://clipart-library.com/2023/Delete-Bin-Trash-PNG-Clipart.png" alt=""></a>
+                                </div>
+                            </td> *@
+                        </tr>      
+                </tbody>
+            </table>
+            <form asp-action="UserDelete" asp-route-id="@Model.c_empid">
+                <input type="submit" class="addBtn" value="Delete"/>
+            </form>
+        </div>
+    </div>
+
+
+
+@* <div>
+    <h2>Employee Detail</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Dob</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Employee Pic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.c_empid</td>
+                <td>@Model.c_empname</td>
+                <td>@Model.c_empgender</td>
+                <td>@Model.c_dob.ToString().Substring(0,10)</td>
+                <td>@string.Join(',',Model.c_shift)</td>
+                <td>@Model.depname</td>
+                <td><img src="@Model.c_img" alt="@Model.c_img" width="175px"></td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    <form asp-action="Delete" asp-route-id="@Model.c_empid" >
+        <input type="submit" class="btn btn-danger" value="Delete"/>
+        <a asp-action="Admin" class="btn btn-primary" asp-route-id="@Model.c_empid">Back</a>
+    </form>
+</div> *@
+
+ 

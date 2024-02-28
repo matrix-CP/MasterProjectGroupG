@@ -9,12 +9,13 @@ namespace MVC.Repostories
 {
     public interface IEmployeeRepository
     {
-        public void AddEmployee(tblEmployee employee);
-        public void DeleteEmployee(int id);
+
         public List<tblEmployee> GetAllEmployee();
         public List<SelectListItem> GetDepartments();
         public tblEmployee GetEmployee(int id);
-        public string GetExistingPath(int id);
         public void UpdateEmployee(tblEmployee employee);
+        public void AddEmployee(tblEmployee employee);
+        public void DeleteEmployee(int id);
+
     }
 }

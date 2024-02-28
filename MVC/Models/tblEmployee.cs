@@ -18,5 +18,8 @@ namespace MVC.Models
         public List<SelectListItem>? depList{get; set;}
         public string? c_img{get; set;}
         public IFormFile? imgFile{get; set;}
+
+        public int c_uid{get; set;}
+
     }
 }

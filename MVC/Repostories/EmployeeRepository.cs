@@ -14,10 +14,12 @@ namespace MVC.Repostories
         {
             if(employee.imgFile != null && employee.imgFile.Length > 0)
             {
-                // var folderPath = "C:\Users\bhatt\OneDrive\Desktop\Casepoint Internship\GitDemo\MasterProject\MasterProjectGroupG\MVC\wwwroots";
+
+                // var folderPath = "D://My Learning//Core MVC//MasterProjectGroupG//MVC//wwwroot//Images";
                 var folderPath = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot", "Images");
-                // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
-                var fullPath = Path.Combine(folderPath, employee.imgFile.FileName);
+                var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath, filePath);
+
                 if(!Directory.Exists(folderPath))
                 {
                     Directory.CreateDirectory(folderPath);
@@ -27,7 +29,9 @@ namespace MVC.Repostories
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/"+employee.imgFile.FileName;
+
+                employee.c_img = "/Images/"+filePath;
+
 
             }
             var cmd = new NpgsqlCommand();
@@ -65,7 +69,9 @@ namespace MVC.Repostories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname * from t_empmaster";
+
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid";
+
             var dr = cmd.ExecuteReader();
             while (dr.Read())
             {
@@ -77,6 +83,9 @@ namespace MVC.Repostories
                     c_dob = DateTime.Parse(dr["c_dob"].ToString()),
                     c_shift = dr["c_shift"].ToString().Split(",").ToList(),
                     c_depart = Convert.ToInt32(dr["c_depart"]),
+
+                    depname = dr["c_depname"].ToString(),
+
                     c_img = dr["c_img"].ToString()
                 };
                 employees.Add(emp);
@@ -115,7 +124,9 @@ namespace MVC.Repostories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "select * from t_empmaster WHERE c_empid = @id";
+
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+
             cmd.Parameters.AddWithValue("@id", id);
             var dr = cmd.ExecuteReader();
             while (dr.Read())
@@ -126,6 +137,9 @@ namespace MVC.Repostories
                 employee.c_dob = DateTime.Parse(dr["c_dob"].ToString());
                 employee.c_shift = dr["c_shift"].ToString().Split(",").ToList();
                 employee.c_depart = Convert.ToInt32(dr["c_depart"]);
+
+                employee.depname = dr["c_depname"].ToString();
+
                 employee.c_img = dr["c_img"].ToString();
 
             }

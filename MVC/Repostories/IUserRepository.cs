@@ -9,8 +9,8 @@ namespace MVC.Repostories
 {
     public interface IUserRepository
     {
-        void Register(tblUser user);
+        void Registermvc(tblUser user);
 
-        tblUser Login(tblUser user);
+        tblUser Loginmvc(tblUser user);
     }
 }

@@ -44,7 +44,7 @@ namespace MVC.Controllers
         [HttpPost]
         public JsonResult Register([FromBody] tblUser user)
         {
-            _userRepository.Register(user);
+            _userRepository.Registermvc(user);
             return Json("Registered Successfully");
         }
 
@@ -65,7 +65,7 @@ namespace MVC.Controllers
         [HttpPost]
         public JsonResult Login([FromBody] tblUser user)
         {
-            tblUser user1 = _userRepository.Login(user);
+            tblUser user1 = _userRepository.Loginmvc(user);
 
             if (user1.c_uid != 0)
             {

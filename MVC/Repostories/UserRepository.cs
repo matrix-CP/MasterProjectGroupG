@@ -26,7 +26,7 @@ namespace MVC.Repostories
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public void Register(tblUser user)
+        public void Registermvc(tblUser user)
         {
             try
             {
@@ -61,7 +61,7 @@ namespace MVC.Repostories
             }
         }
 
-        public tblUser Login(tblUser user)
+        public tblUser Loginmvc(tblUser user)
         {
             try
             {

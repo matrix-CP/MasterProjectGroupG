@@ -52,12 +52,12 @@ namespace API.Controllers
                 if (user1.c_role == "admin")
                 {
                     // For admin user
-                    return Ok("Admin");
+                    return Ok(new{status="Admin",id=user1.c_uid});
                 }
                 else
                 {
                     // For other users
-                    return Ok("Success");
+                    return Ok(new{status="Success",id=user1.c_uid});
                 }
             }
             else
@@ -82,11 +82,11 @@ namespace API.Controllers
         }
 
         [HttpGet("GetEmployee")]
-        public IActionResult GetEmployee()
+        public IActionResult GetEmployee(int user_id)
         {
             try
             {
-                List<tblEmployee> employees = _employeeRepository.GetAllEmployeeUser();
+                List<tblEmployee> employees = _employeeRepository.GetAllEmployeeUser(user_id);
                 return Ok(employees);
             }
             catch (Exception ex)

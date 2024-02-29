@@ -11,7 +11,7 @@ namespace API.Repositories
     {
         void AddEmployeeDetails(tblEmployee employee);
 
-        List<tblEmployee> GetAllEmployeeUser();
+        List<tblEmployee> GetAllEmployeeUser(int id);
 
         List<tblEmployee> GetAllEmployeeDetailsAdmin();
 

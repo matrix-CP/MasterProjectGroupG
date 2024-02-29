@@ -73,7 +73,7 @@ namespace API.Repositories
         }
 
 
-        public List<tblEmployee> GetAllEmployeeUser()
+        public List<tblEmployee> GetAllEmployeeUser(int user_id)
         {
             var employees = new List<tblEmployee>();
             var cmd = new NpgsqlCommand();
@@ -83,7 +83,7 @@ namespace API.Repositories
             cmd.CommandType = System.Data.CommandType.Text;
 
             cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid where e.c_uid = @uid";
-            cmd.Parameters.AddWithValue("@uid", _httpContextAccessor.HttpContext.Session.GetInt32("userid"));
+            cmd.Parameters.AddWithValue("@uid", user_id);
             var dr = cmd.ExecuteReader();
             while (dr.Read())
             {

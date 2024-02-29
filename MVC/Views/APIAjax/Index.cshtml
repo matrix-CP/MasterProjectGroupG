@@ -1,6 +1,6 @@
 @model List<API.Models.tblEmployee>
 
-<h1>Welcome User</h1>
+<h1>Welcome @ViewData["user_id"]</h1>
 @{
     var username = Context.Session.GetString("username");
     var email = Context.Session.GetString("email");
@@ -115,8 +115,9 @@
             
 
             function loadData() {
+                var url1 = 'https://localhost:7022/api/AjaxAPI/GetEmployee/?user_id=@ViewData["user_id"]';
                 $.ajax({
-                    url: 'https://localhost:7022/api/AjaxAPI/GetEmployee',
+                    url: url1,
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
@@ -160,7 +161,7 @@
                     console.error('Error fetching departments:', status, error);
                 }
             });
-            setTimeout(loadData, 10000);
+            setTimeout(loadData, 1000);
 
             $('#EmployeeTable').on('click', '.delete', function () {
                 var c_empid = $(this).data('id');

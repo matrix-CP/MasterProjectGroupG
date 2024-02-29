@@ -22,14 +22,14 @@ namespace MVC.Controllers
         }
 
         // [Route("Index")]
-        public IActionResult Index()
+        public IActionResult Index(int user_id)
         {
             // var username = HttpContext.Session.GetString("username");
             // var email = HttpContext.Session.GetString("email");
 
             // ViewData["Username"] = username;
             // ViewData["Email"] = email;
-
+            ViewData["user_id"] = user_id;
             return View();
         }
 

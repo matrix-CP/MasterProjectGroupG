@@ -38,8 +38,10 @@
                 data: JSON.stringify(login),
                 contentType: "application/json; charset=utf-8",
                 success: function (data) {
-                    if (data == "Success") {
-                        window.location.href = "/APIAjax/Index";
+                    if (data.status == "Success") {
+                        console.log(data);
+                        debugger
+                        window.location.href = "/APIAjax/Index/?user_id="+data.id;
                     }
                     else if(data == "Admin")
                     {

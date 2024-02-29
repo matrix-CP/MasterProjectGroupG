@@ -111,8 +111,8 @@
                 });
             });
 
-            loadData();
-            setInterval(loadData, 10000);
+            @* loadData(); *@
+            
 
             function loadData() {
                 $.ajax({
@@ -120,6 +120,7 @@
                     type: 'GET',
                     dataType: 'json',
                     success: function (data) {
+                        debugger
                         var EmployeeTable = $('#EmployeeTable tbody');
                         EmployeeTable.empty();
                         data.forEach(function (emp) {
@@ -144,6 +145,7 @@
                 type: 'GET',
                 dataType: 'json',
                 success: function (data) {
+                    debugger
                     if (Array.isArray(data)) {
                         var dropdown = $('#depart');
                         dropdown.empty().append($('<option value="">Select Department</option>'));
@@ -158,6 +160,7 @@
                     console.error('Error fetching departments:', status, error);
                 }
             });
+            setTimeout(loadData, 10000);
 
             $('#EmployeeTable').on('click', '.delete', function () {
                 var c_empid = $(this).data('id');

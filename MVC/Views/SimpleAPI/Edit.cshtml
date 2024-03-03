@@ -17,6 +17,10 @@
         if (employeeId > 0) {
             LoadEmployeeDetails();
         }
+
+        $("#CancelEmployeeButton").click(function () {
+                window.location.href = "/SimpleAPI/Employee";
+        });
     });
 
     function LoadEmployeeDetails() {
@@ -144,6 +148,7 @@
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="button" value="Update Employee" onclick="UpdateEmployee()" class="btn btn-primary">
+                <button type="button" class="btn btn-primary" id="CancelEmployeeButton">Cancel</button>
             </div>
             
         </div>

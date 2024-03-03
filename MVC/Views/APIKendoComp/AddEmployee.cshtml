@@ -47,6 +47,7 @@
         </div>
 
         <input class="btn btn-success" type="submit" value="Add Employee">
+        <button type="button" class="btn btn-primary" id="Employee">back</button>
     </form>
 </div>
 
@@ -117,6 +118,10 @@
                         alert("Error adding employee. Please try again.");
                     }
                 });
+            });
+
+            $("#Employee").click(function () {
+                window.location.href = "/APIKendoComp/Employee";
             });
         });
     </script>

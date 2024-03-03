@@ -4,6 +4,8 @@
 }
 <h2>Admin Dashboard</h2>
 
+<button type="button" class="btn btn-primary" id="login">Logout</button>
+
 <div id="grid"></div>
 
 @section scripts {
@@ -54,6 +56,10 @@
                 ],
                 sortable: true,
                 
+            });
+
+            $("#login").click(function () {
+                window.location.href = "/APIKendoComp/Login";
             });
         });
     </script>

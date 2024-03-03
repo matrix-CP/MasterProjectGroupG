@@ -47,6 +47,7 @@
         </div>
         <br />
         <button type="button" class="btn btn-primary" id="AddEmployeeButton">Add Employee</button>
+        <button type="button" class="btn btn-primary" id="CancelEmployeeButton">Cancel</button>
     </form>
 </div>
 
@@ -108,6 +109,10 @@
                         alert("Error adding employee: " + error);
                     }
                 });
+            });
+
+            $("#CancelEmployeeButton").click(function () {
+                window.location.href = "/SimpleAPI/Employee";
             });
         });
     </script>

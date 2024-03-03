@@ -56,6 +56,7 @@
         </div>
 
         <input class="btn btn-success" type="submit" value="Update Employee">
+        <button type="button" class="btn btn-primary" id="Admin">back</button>
     </form>
 </div>
 
@@ -148,6 +149,10 @@
                         alert("Error updating employee. Please try again.");
                     }
                 });
+            });
+
+            $("#Admin").click(function () {
+                window.location.href = "/APIKendoComp/Admin";
             });
         });
     </script>

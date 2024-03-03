@@ -4,6 +4,7 @@
 }
 <h2>Employee Dashboard</h2>
 <a asp-action="AddEmployee" class="btn btn-primary">Add Employee</a>
+<button type="button" class="btn btn-primary" id="login">Logout</button>
 
 <div id="employeeGrid"></div>
 
@@ -61,6 +62,10 @@
             window.editEmployee = function (empId) {
                 window.location.href = "/APIKendoComp/UserUpdateEmployee/?id=" + empId;
             };
+
+            $("#login").click(function () {
+                window.location.href = "/APIKendoComp/Login";
+            });
         });
     </script>
 }

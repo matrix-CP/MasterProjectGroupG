@@ -101,6 +101,11 @@ $(document).ready(function () {
             });
         }
     });
+
+    $('#login').click(function () {
+        localStorage.removeItem('token');
+        window.location = "/SimpleAPI/Login";
+    });
 });
 
 
@@ -114,6 +119,7 @@ $(document).ready(function () {
 
 <a href="/SimpleAPI/Add" class="btn btn-danger">Add Employee</a>
 @* <button id="deleteSelectedBtn" class="btn btn-danger">Delete Selected</button> *@
+<a id="login" class="btn btn-danger">Logout</a>
 
 
 

@@ -130,7 +130,7 @@
                     {
                          <tr class="stripe">
                             <td>@emp.c_empid</td>
-                            <td><img class="img" src= @emp.c_img asp-for="c_img"></td>
+                            <td><img class="img" src= '@emp.c_img' asp-for="c_img"></td>
                             <td>@emp.c_empname</td>
                             <td>@emp.c_empgender</td>
                             <td>@emp.c_dob.ToString().Substring(0,10)</td>

@@ -22,5 +22,17 @@ namespace API.Repositories
         public string GetExistingPath(int id);
 
         public void UpdateEmployee(tblEmployee employee);
+        public void AddEmployeeDetails(tblEmployee employee);
+        public List<tblEmployee> GetAllEmployeeUser(int user_id);
+        public List<tblEmployee> GetAllEmployeeDetailsAdmin();
+        public tblEmployee GetEmployeeAdmin(int id);
+        public void UpdateEmployeeAdmin(tblEmployee updatedEmployee);
+
+        bool AddEmployeeGrid(tblEmployee emp);
+        void Deleteemp(int id);
+        tblEmployee GetempById(int id);
+        void Updateemp(tblEmployee emp);
+        List<tblEmployee> viewemp();
+        List<tblDepartment> Viewdept();
     }
 }

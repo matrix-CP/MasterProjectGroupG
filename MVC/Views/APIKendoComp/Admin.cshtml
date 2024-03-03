@@ -1,0 +1,67 @@
+@model List<MVC.Models.tblEmployee>
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<h2>Admin Dashboard</h2>
+
+<div id="grid"></div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#grid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "https://localhost:7022/api/APIKendoComp/Admin",
+                            dataType: "json"
+                        }
+                    },
+                    schema: {
+                        model: {
+                            fields: {
+                                c_empid: { type: "number" },
+                                c_empname: { type: "string" },
+                                c_empgender: { type: "string" },
+                                c_dob: { type: "date" },
+                                c_shift: { type: "string" },
+                                depname: { type: "string" },
+                                c_img: { type: "string" }
+                            }
+                        }
+                    }
+                },
+                columns: [
+                    { field: "c_empid", hidden: true },
+                    { field: "c_empname", title: "Name" },
+                    { field: "c_empgender", title: "Gender" },
+                    { field: "c_dob", title: "Dob", template: "#= kendo.toString(c_dob, 'dd/MM/yyyy') #" },
+                    {
+                        field: "c_shift",
+                        title: "Shift",
+                        template: "#if (c_shift instanceof Array) { # #= c_shift.join(', ') # #} else {# #= c_shift # #}#"
+                    },
+                    { field: "depname", title: "Department" },
+                    { field: "c_img", title: "Employee Pic", template: "<img src='#= c_img #' alt='#= c_img #' width='100px' />" },
+                    {
+                        title: "Actions",
+                        template: `
+                            <a href='/APIKendoComp/UpdateEmployee/?id=#= c_empid #' class='btn btn-primary'>Edit</a>
+                            <a href='/APIKendoComp/Details/?id=#= c_empid #' class='btn btn-outline-primary'>Detail</a>
+                            <a href='/APIKendoComp/Delete/?id=#= c_empid #' class='btn btn-danger'>Delete</a>
+                        `
+                    }
+                ],
+                sortable: true,
+                
+            });
+        });
+    </script>
+}
+<script src="https://kendo.cdn.telerik.com/2021.3.1207/js/kendo.all.min.js"></script>
+<script>
+    kendo.ui.progress(document.body, true);
+    kendo.culture("en-US");
+
+    kendo.ui.progress(document.body, false);
+</script>

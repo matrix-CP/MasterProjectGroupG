@@ -1,0 +1,126 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Update Employee</h2>
+    <form asp-action="UserUpdateEmployee" enctype="multipart/form-data">
+        <input class="form-control" hidden type="text" asp-for="c_empid">
+
+        <div class="form-group">
+            <p>Employee Name</p>
+            <input kendo-textbox asp-for="c_empname" style="width: 100%">
+        </div>
+
+        <div>
+            <label>Gender:</label>
+              <label for="c_empgender">Male</label>
+            <input id="txtMGender" type="radio" asp-for="c_empgender" value="Male" />
+              <label for="c_empgender">Female</label>
+            <input id="txtFGender" type="radio" asp-for="c_empgender" value="Female" />
+              <label for="c_empgender">Other</label>
+            <input id="txtOGender" type="radio" asp-for="c_empgender" value="Other" /><br>
+        </div>
+
+
+
+        <div class="form-group">
+            <p>Employee Dob</p>
+            <input kendo-datepicker asp-for="c_dob" style="width: 100%">
+        </div>
+
+        <div>
+            <label for="c_shift">Shift:</label>
+            <div>
+                <label for="c_shift">A</label>
+                <input id="A" name="c_shift" type="checkbox" value="A"checked='@(@Model.c_shift!=null && Model.c_shift.Contains("A"))'/>
+                <label for="c_shift">M</label>
+               <input id="M" name="c_shift" type="checkbox"  value="M"checked='@(@Model.c_shift!=null && Model.c_shift.Contains("M"))'/><br>
+            </div>
+              
+        </div>
+
+        <div class="form-group">
+            <p>Department</p>
+            <select kendo-dropdownlist asp-for="c_depart" style="width: 100%">
+                @foreach (var dep in Model.depList)
+                {
+                    <option value="@dep.Value">@dep.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Pic</p>
+            <input kendo-upload asp-for="imgFile">
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Update Employee">
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+           
+            @* $("input[name='c_shift']").prop("checked", "@Model.c_shift".includes("A"));
+            $("input[name='c_shift']").prop("checked", "@Model.c_shift".includes("M")); *@
+            $("select[name='c_depart']").data("kendoDropDownList").value("@Model.c_depart");
+
+            $("#txtMGender").kendoRadioButton({
+                label:"Male",
+                size:"50px"
+            });
+
+            $("#txtFGender").kendoRadioButton({
+                label: "Female",
+                size:"20px"
+            });
+
+             $("#txtOGender").kendoRadioButton({
+                label: "Other",
+                size:"20px"
+            });
+
+            $("#A").kendoCheckBox({
+                label:"A",
+                size:"large",
+                rounded:"large"
+            });
+            $("#M").kendoCheckBox({
+                label:"M",
+                size:"large",
+                rounded:"large"
+            });
+
+            $.each(response.c_shift, function(index, value) {
+        $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
+    });
+
+            @* shiftA.data("kendoCheckBox").value("@Model.c_shift".includes("A"));
+            shiftM.data("kendoCheckBox").value("@Model.c_shift".includes("M")); *@
+                    @* $.ajax({
+                    url:"UpdateEmployee",
+                    method:"post",
+                    data:formData,
+                    
+                    success: function(response){
+                        console.log(response);
+                        debugger
+                        if(response){
+                            alert("Updated Successfully!");
+                            window.location.href="https://localhost:7249/MVCKendoComp/Admin ";
+                        }
+
+                        else{
+                            alert("Some error occured!");
+                        }
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        alert("Some Error Occured");
+                        console.error("Error:", textStatus, errorThrown);
+                    }
+                }); *@
+        });
+    </script>
+}

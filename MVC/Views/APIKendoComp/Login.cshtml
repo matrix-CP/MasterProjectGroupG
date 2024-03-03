@@ -1,0 +1,77 @@
+@model MVC.Models.tblUser
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>  
+</head>
+<body>
+   
+   <form asp-action="Login" asp-controller="APIKendoComp" method="post" id="login">
+        <div>
+            <input id="email" asp-for="c_uemail"/>
+        </div>
+        <div>
+            <input id="password" asp-for="c_password" type="password"/>
+        </div>
+        <br>
+        <input type="submit" value="Login" id="loginbtn" class="btn btn-success">
+   </form>
+
+    <script>
+
+        $(document).ready(function() {
+            $("#email").kendoTextBox({
+                 label: {
+                    content: "Email",
+                    floating: true
+                }
+            });
+
+            $("#password").kendoTextBox({
+                 label: {
+                    content: "Password",
+                    floating: true
+                },
+                inputType: "password" 
+            });
+
+            $("#loginbtn").kendoButton({
+                themeColor: "primary"
+            });
+
+            $(document).on("click","#loginbtn",function(e){
+                e.preventDefault();
+                var formData = $("#login").serialize();
+                $.ajax({
+                    url:"https://localhost:7022/api/APIKendoComp/Login", // Updated URL
+                    method:"post",
+                    data:formData,
+                    success: function(response){
+                        console.log(response);
+                        if(response=="Admin"){
+                            alert("Loged In Successfully!");
+                            window.location.href="/APIKendoComp/Admin";
+                        }
+                        else if(response=="Employee"){
+                            alert("Loged In Successfully!");
+                            window.location.href="/APIKendoComp/Employee";
+                        }
+                        else{
+                            alert(response);
+                            // window.location.href="https://localhost:7114/Employee/Login";
+                        }    
+                    },
+                    error:function(jqXHR, textStatus, errorThrown){
+                        alert("Some Error Occurred");
+                        console.error("Error:", textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

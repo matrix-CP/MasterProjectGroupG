@@ -1,0 +1,102 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Add Employee</h2>
+    <form asp-action="AddEmployee" enctype="multipart/form-data">
+        <div class="form-group">
+            <p>Employee Name</p>
+            <input kendo-textbox asp-for="c_empname" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Employee Gender</p>
+            <div style="display: flex; gap:20px; align-items:center;">
+                <input id="txtMGender" name="c_empgender" type="radio" value="Male">
+                @* <label for="txtMGender" class="k-radio-label">Male</label> *@
+                <input id="txtFGender" name="c_empgender" type="radio" value="Female">
+                @* <label for="txtFGender" class="k-radio-label">Female</label> *@
+                <input id="txtOGender" name="c_empgender" type="radio" value="Other">
+                @* <label for="txtOGender" class="k-radio-label">Other</label> *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Dob</p>
+            <input id="txtDob" kendo-datepicker asp-for="c_dob" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Shift</p>
+            <div>
+                <input id="shiftA" type="checkbox" name="c_shift">
+                @* <label for="shiftA" class="k-checkbox-label">A</label> *@
+                <input id="shiftM" type="checkbox" name="c_shift">
+                @* <label for="shiftM" class="k-checkbox-label">M</label> *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Department</p>
+            <select kendo-dropdownlist asp-for="c_depart" style="width: 100%">
+                @foreach (var dep in Model.depList)
+                {
+                    <option value="@dep.Value">@dep.Text</option>
+                }
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Pic</p>
+            <input kendo-upload asp-for="imgFile">
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Add Employee">
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#txtMGender").kendoRadioButton({
+                label: "Male",
+                size: "50px"
+            });
+
+            $("#txtFGender").kendoRadioButton({
+                label: "Female",
+                size: "20px"
+            });
+
+            $("#txtOGender").kendoRadioButton({
+                label: "Other",
+                size: "20px"
+            });
+
+            $("#txtDob").kendoDatePicker({
+                format: "yyyy-MM-dd"
+            });
+
+            $("#shiftA").kendoCheckBox({
+                label: "A",
+                size: "50px",
+                rounded: "large"
+            });
+
+            $("#shiftM").kendoCheckBox({
+                label: "M",
+                size: "large",
+                rounded: "large"
+            });
+
+            $("select[name='c_depart']").kendoDropDownList();
+        });
+    </script>
+    <style>
+        /* Style for checkbox label */
+        .k-checkbox-label {
+            margin-left: 5px;
+        }
+    </style>
+}

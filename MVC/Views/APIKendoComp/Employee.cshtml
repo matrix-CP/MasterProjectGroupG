@@ -1,0 +1,66 @@
+@model List<MVC.Models.tblEmployee>
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<h2>Employee Dashboard</h2>
+<a asp-action="AddEmployee" class="btn btn-primary">Add Employee</a>
+
+<div id="employeeGrid"></div>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.default.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#employeeGrid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url: "https://localhost:7022/api/APIKendoComp/Employee",
+                            dataType: "json"
+                        }
+                    },
+                    schema: {
+                        model: {
+                            fields: {
+                                c_empid: { type: "number" },
+                                c_empname: { type: "string" },
+                                c_empgender: { type: "string" },
+                                c_dob: { type: "date" },
+                                c_shift: { type: "string" },
+                                depname: { type: "string" },
+                                c_img: { type: "string" }
+                            }
+                        }
+                    }
+                },
+                columns: [
+                    { field: "c_empname", title: "Name" },
+                    { field: "c_empgender", title: "Gender" },
+                    { field: "c_dob", title: "Dob", template: "#= kendo.toString(c_dob, 'yyyy-MM-dd') #" },
+                    { field: "c_shift", title: "Shift" },
+                    { field: "depname", title: "Department" },
+                    { field: "c_img", title: "Employee Pic", template: "<img src='#= c_img #' alt='#= c_img #' width='100px' />" },
+                    {
+                        title: "Edit",
+                        template: function (dataItem) {
+                            return "<a href='#' onclick='editEmployee(" + dataItem.c_empid + ")' class='btn btn-success'>Edit</a>";
+                        }
+                    }
+                ],
+                sortable: true,
+                pageable: {
+                    pageSize: 10,
+                    refresh: true
+                }
+            });
+
+            window.editEmployee = function (empId) {
+                window.location.href = "/APIKendoComp/UserUpdateEmployee/?id=" + empId;
+            };
+        });
+    </script>
+}

@@ -1,0 +1,54 @@
+@model List<MVC.Models.tblEmployee>
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<h2>Employee Dashboard</h2>
+<a asp-action="AddEmployee" class="btn btn-primary">Add Employee</a>
+<table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+        <tr>
+            <th>Name</th>
+            <th>Gender</th>
+            <th>Dob</th>
+            <th>Shift</th>
+            <th>Department</th>
+            <th>Employee Pic</th>
+            <th>Edit</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var emp in Model)
+        {
+            <tr>
+                <td>@emp.c_empname</td>
+                <td>@emp.c_empgender</td>
+                <td>@emp.c_dob.ToString("yyyy-MM-dd")</td>
+                <td>@string.Join(',', emp.c_shift)</td>
+                <td>@emp.depname</td>
+                <td>
+                    <img src="@emp.c_img" alt="@emp.c_img" width="175px">
+                </td>
+                <td>
+                    <a asp-action="UserUpdateEmployee" class="btn btn-success" asp-route-id="@emp.c_empid">Edit</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.common.min.css" />
+    <link rel="stylesheet" href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.default.min.css" />
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("#empName").kendoTextBox();
+            $("#empGender").kendoTextBox();
+            $("#empDob").kendoDatePicker();
+            $("#empShift").kendoTextBox();
+            $("#empDepartment").kendoTextBox();
+        });
+    </script>
+}

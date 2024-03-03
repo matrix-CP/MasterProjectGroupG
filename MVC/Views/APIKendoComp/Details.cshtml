@@ -1,0 +1,86 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Employee Detail</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="c_empid"></td>
+                <td id="empName"></td>
+                <td id="empGender"></td>
+                <td id="empDob"></td>
+                <td id="empShift"></td>
+                <td id="empDepartment"></td>
+                <td><img id="empPic" width="100"/></td>
+            </tr>
+        </tbody>
+    </table>
+    <a id="editButton" class="btn btn-success">Edit</a>
+    <a id="backButton" class="btn btn-primary">Back</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#empId").kendoTextBox({ enabled: false });
+            $("#empName").kendoTextBox({ enabled: false });
+            $("#empGender").kendoTextBox({ enabled: false });
+            $("#empDob").kendoDatePicker({ format: "yyyy-MM-dd", enabled: false });
+            $("#empShift").kendoTextBox({ enabled: false });
+            $("#empDepartment").kendoTextBox({ enabled: false });
+            $("#empPic").kendoMaskedTextBox({ enabled: false });
+
+             function LoadEmployeeDetails() {
+                var settings = {
+                    "url": "https://localhost:7022/api/APIKendoComp/GetEmployee/" + @ViewBag.id,
+                    "method": "GET",
+                    "timeout": 0,
+                    @* "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') } *@
+                };
+
+                $.ajax(settings).done(function (response) {
+                    $("#c_empid").text(response.c_empid);
+                    $("#empName").text(response.c_empname);
+                    $("#empDob").text(response.c_dob.split('T')[0]);
+        @* $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
+                    $("#c_dob").val(response.c_dob); *@
+                        $("#empGender").text(response.c_empgender);
+                    $("#empDepartment").text(response.depname);
+                    $("#empShift").text(response.c_shift);
+                    
+                    $('#empPic').attr('src', response.c_img);
+                });
+
+            }
+            LoadEmployeeDetails();
+
+            $("#editButton").kendoButton({
+                click: function () {
+                    // Redirect to the EditEmployee action with the employee ID
+                    
+                    window.location.href = "/APIKendoComp/UpdateEmployee/" + @ViewBag.Id;
+                }
+            });
+
+            $("#backButton").kendoButton({
+                click: function () {
+                    // Redirect to the Admin action
+                    window.location.href = "/APIKendoComp/Admin";
+                }
+            });
+        });
+    </script>
+}

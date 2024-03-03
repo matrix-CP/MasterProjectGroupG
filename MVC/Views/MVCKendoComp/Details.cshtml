@@ -1,0 +1,59 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Employee Detail</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Gender</th>
+                <th>Dob</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Employee Pic</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="empId">@Model.c_empid</td>
+                <td id="empName">@Model.c_empname</td>
+                <td id="empGender">@Model.c_empgender</td>
+                <td id="empDob">@Model.c_dob.ToString().Substring(0, 10)</td>
+                <td id="empShift">@string.Join(',', Model.c_shift)</td>
+                <td id="empDepartment">@Model.depname</td>
+                <td><img id="empPic" src="@Model.c_img" alt="@Model.c_img" width="175px"></td>
+            </tr>
+        </tbody>
+    </table>
+    <a id="editButton" class="btn btn-success" asp-action="UpdateEmployee" asp-route-id="@Model.c_empid">Edit</a>
+    <a id="backButton" class="btn btn-primary" asp-action="Admin" asp-route-id="@Model.c_empid">Back</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#empId").kendoTextBox({ enabled: false });
+            $("#empName").kendoTextBox({ enabled: false });
+            $("#empGender").kendoTextBox({ enabled: false });
+            $("#empDob").kendoDatePicker({ format: "yyyy-MM-dd", enabled: false });
+            $("#empShift").kendoTextBox({ enabled: false });
+            $("#empDepartment").kendoTextBox({ enabled: false });
+            $("#empPic").kendoMaskedTextBox({ enabled: false });
+
+            $("#editButton").kendoButton({
+                click: function () {
+                    // Handle edit button click
+                }
+            });
+
+            $("#backButton").kendoButton({
+                click: function () {
+                    // Handle back button click
+                }
+            });
+        });
+    </script>
+}

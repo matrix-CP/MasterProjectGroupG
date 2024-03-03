@@ -1,0 +1,100 @@
+@model MVC.Models.tblUser
+
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+
+<h2>Register</h2>
+
+<link href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.common.min.css" rel="stylesheet" />
+<link href="https://kendo.cdn.telerik.com/2024.1.130/styles/kendo.default.min.css" rel="stylesheet" />
+<script src="https://kendo.cdn.telerik.com/2024.1.130/js/kendo.ui.core.min.js"></script>
+
+@using (Html.BeginForm("Register", "APIKendoComp", FormMethod.Post, new { id = "register" }))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <hr />
+        <div>
+            <input id="txtName" asp-for="c_uname" required />
+        </div>
+
+        <div>
+            <input id="txtEmail" asp-for="c_uemail" required />
+        </div>
+
+        <div>
+            <input id="txtPass" asp-for="c_password" type="password" /><br>
+        </div>
+
+        <div>
+            <input id="txtCPass" asp-for="c_chkpassword" type="password" /><br>
+        </div>
+
+        <div>
+            <input type="submit" value="Register" id="btnSubmit" class="btn btn-success" />
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#txtName").kendoTextBox({
+                label: {
+                    content: "Name",
+                    floating:true
+                }
+            });
+
+            $("#txtEmail").kendoTextBox({
+                label: {
+                    content: "Email",
+                    floating: true
+                }
+            });
+            $("#txtPass").kendoTextBox({
+                label: {
+                    content: "Password",
+                    floating:true
+                }
+            });
+
+             $("#txtCPass").kendoTextBox({
+                label: {
+                    content: "Confirm Password",
+                    floating:true
+                }
+            });
+            $("#btnSubmit").kendoButton({
+                themeColor: "success"
+            });
+
+            $(document).on("click", "#btnSubmit", function (e) {
+                e.preventDefault();
+                var formData = $("#register").serialize();
+
+                $.ajax({
+                    url: "https://localhost:7022/api/APIKendoComp/Register",
+                    method: "post",
+                    data: formData,
+                    
+
+                    success: function (response) {
+                        console.log(response);
+                        if (response) {
+                            alert("Registered Successfully!");
+                            window.location.href = "/APIKendoComp/Login";
+                        } else {
+                            alert("Some error occurred!");
+                        }
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        alert("Some Error Occurred");
+                        console.error("Error:", textStatus, errorThrown);
+                    }
+                });
+            });
+        });
+    </script>
+}

@@ -1,0 +1,61 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Employee Detail</h2>
+
+    <div>
+        <label>ID:</label>
+        <span id="empId">@Model.c_empid</span>
+    </div>
+
+    <div>
+        <label>Name:</label>
+        <input id="empName" value="@Model.c_empname" />
+    </div>
+
+    <div>
+        <label>Gender:</label>
+        <input id="empGender" value="@Model.c_empgender" />
+    </div>
+
+    <div>
+        <label>Dob:</label>
+        <input id="empDob" value="@Model.c_dob.ToString("yyyy-MM-dd")" />
+    </div>
+
+    <div>
+        <label>Shift:</label>
+        <input id="empShift" value="@string.Join(',', Model.c_shift)" />
+    </div>
+
+    <div>
+        <label>Department:</label>
+        <input id="empDepartment" value="@Model.depname" />
+    </div>
+
+    <div>
+        <label>Employee Pic:</label>
+        <img id="empPic" src="@Model.c_img" alt="@Model.c_img" width="175px" />
+    </div>
+
+    <form asp-action="Delete" asp-route-id="@Model.c_empid">
+        <input type="submit" class="btn btn-danger" value="Delete" />
+        <a asp-action="Admin" class="btn btn-primary" asp-route-id="@Model.c_empid">Back</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#empId").kendoTextBox({ enabled: false });
+            $("#empName").kendoTextBox({ enabled: false });
+            $("#empGender").kendoTextBox({ enabled: false });
+            $("#empDob").kendoDatePicker({ format: "yyyy-MM-dd", enabled: false });
+            $("#empShift").kendoTextBox({ enabled: false });
+            $("#empDepartment").kendoTextBox({ enabled: false });
+            $("#empPic").kendoMaskedTextBox({ enabled: false });
+        });
+    </script>
+}

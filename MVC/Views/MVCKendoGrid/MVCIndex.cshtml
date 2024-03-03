@@ -1,0 +1,161 @@
+@model List<MVC.Models.tblEmployee>
+@{
+    Layout = "~/Views/Shared/_customLayout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+
+<div id="grid"></div>
+
+<script>
+
+    $(document).ready(function(){
+        var dataSource = new kendo.data.DataSource({
+            transport: {
+                read: {
+                    url: "/MVCKendoGrid/viewemp",
+                    dataType: "json",
+                     type: "GET"
+                },
+                create: {
+                    url: "/MVCKendoGrid/AddEmployeeGrid", // Removed extra forward slash
+                    dataType: "json",
+                    type: "POST",
+                    data: function (data) {
+                        data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                        console.log("Data to be sent:", data);
+                        return JSON.stringify(data);
+                    },
+                },
+                update: {
+                    url: "/MVCKendoGrid/Edit",
+                    dataType: "json",
+                    type: "POST",
+                    data: function (data) {
+                        data.c_dob = kendo.toString(data.c_dob, "yyyy-MM-dd");
+                        console.log("Data to be sent:", data);
+                        return JSON.stringify(data);
+                    },
+                },
+                destroy: {
+                    url: "/MVCKendoGrid/Delete",
+                    dataType: "json",
+                    type: "POST"
+                }
+            },
+            pageSize: 10,
+            schema: {
+                model: {
+                    id: "c_empid",
+                    fields: {
+                        c_empid: {type: "number", editable: false, nullable: false},
+                        c_empname: {type: "string", validation: {required: true}},
+                        c_empgender: {type: "string", validation: {required: true}},
+                        c_dob: {type: "date", validation: {required: true}},
+                        c_shift: {type: "string", validation: {required: true}},
+                        c_img: {type: "string", validation: {required: true}},
+                       imgFile: { type: "file", validation: { required: true } },
+
+                        c_depart: {type: "number", validation: {required: true}}
+                    }
+                }
+            }
+        });
+
+        $("#grid").kendoGrid({
+            dataSource: dataSource,
+            columns: [
+                {field: "c_empid", title: "emp ID"},
+                {field: "c_empname", title: "emp Name"},
+                {field: "c_empgender", title: "Gender" ,editor: genderTypeRadioEditor }, 
+                {field: "c_dob", title: "Date Of Birth"  , format: "{0:yyyy-MM-dd}" ,editor:dateEditor},
+                {field: "c_shift", title: "Shift" ,  editor: shiftCheckboxEditor},
+                //{field: "c_img", title: " c_img"},
+
+                
+                 {
+                        field: "imgFile", title: "emp Photo",
+                        editor: imageupload,
+                        template: "<img src='#= c_img #' alt='emp Photo' style='max-width: 100px; max-height: 100px;'/>"
+                },
+                {field: "c_depart", title: "c_depart" , editor:deptDropDownEditor},
+                {command: ["edit", "destroy"], title: "&nbsp;", width: "200px"}
+            ],
+            editable: "popup",
+            toolbar: ["create"],
+            pageable: true,
+            sortable: true,
+            filterable: true,
+             edit: function (e) {
+                if (e.model.isNew()) {
+                    e.container.find(".k-grid-update").text("Create");
+                }
+            }
+        });
+        function dateEditor(container, options) {
+            $('<input name="' + options.field + '" data-bind="value:' + options.field + '" />')
+                .appendTo(container)
+                .kendoDatePicker({
+                    format: "yyyy-MM-dd",
+                    value: new Date()
+                });
+        }
+         function imageupload(container, options) {
+            $('<input name="imgFile" type="file" id="imgFile" data-role="upload" data-async=\'{ "saveUrl": "/MVCKendoGrid/UploadPhoto", "autoUpload": true }\' class="k-input k-textbox">').appendTo(container);
+        }
+         function genderTypeRadioEditor(container, options) {
+            $('<input type="radio" name="' + options.field + '" value="Male" required/> Male' +
+                '<input type="radio" name="' + options.field + '" value="Female" required/> Female'+
+                 '<label  name=" value="Female" required/>' )
+            .appendTo(container);
+        }
+        function shiftCheckboxEditor(container, options) {
+                
+                var checkboxWrapper = $('<div>').appendTo(container);
+
+                
+                checkboxWrapper.kendoCheckBoxGroup({
+                    items: [
+                        { label: "M", value: "M" },
+                        { label: "A", value: "A" },
+                        
+                    ]
+                });
+                var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
+                checkboxGroup.value(options.model.c_shift ? options.model.c_shift.split(",") : []);
+                checkboxGroup.bind("change", function (e) {
+                    options.model.set("c_shift", e.sender.value().join(","));
+                });
+            }
+
+             function deptDropDownEditor(container, options) {
+            $('<input required data-text-field="c_depname" data-value-field="c_depid" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "/MVCKendoGrid/viewdept",
+                                dataType: "json"
+                            }
+                        }
+                    }
+                });
+        }
+
+        dataSource.bind("requestEnd", function(e){
+            if(e.type === "create" || e.type === "update" || e.type === "destroy"){
+                dataSource.read();
+            }
+        });
+        $("#grid").on("click", ".k-grid-cancel-changes", function(){
+            dataSource.cancelChanges();
+        });
+    });
+
+
+</script>

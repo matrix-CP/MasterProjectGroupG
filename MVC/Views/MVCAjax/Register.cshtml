@@ -1,0 +1,72 @@
+@model MVC.Models.tblUser
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_customLayout.cshtml";
+}
+
+<h2>Register</h2>
+
+<div>
+    <form id="RegisterForm">
+        <div class="form-group">
+            <label for="c_uname">User Name:</label>
+            <input type="text" class="form-control" id="uname" name="uname">
+        </div>
+        <div class="form-group">
+            <label for="c_uemail">Email:</label>
+            <input type="text" class="form-control" id="uemail" name="uemail">
+        </div>
+        <div class="form-group">
+            <label for="c_password">Password:</label>
+            <input type="Password" class="form-control" id="password" name="password">
+        </div>
+        <div class="form-group">
+            <label for="c_chkpassword">Confirm Password:</label>
+            <input type="text" class="form-control" id="chkpassword" name="chkpassword">
+        </div>
+        <br />
+        <button type="button" class="btn btn-primary" id="RegisterButton">Register</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@section Scripts
+{
+
+
+    <script>
+        $(document).ready(function () {
+            $("#RegisterButton").click(function () {
+                var user = {
+                    c_uname: $("#uname").val(),
+                    c_uemail: $("#uemail").val(),
+                    c_password: $("#password").val(),
+                    c_chkpassword: $("#chkpassword").val()
+                };
+
+                if (user.c_uname == "" || user.c_uemail == "" || user.c_password == "" || user.c_chkpassword == "") {
+                    alert("Please fill all the fields.");
+                }
+                else if (user.c_password != user.c_chkpassword) {
+                    alert("Password and Confirm Password should be the same.");
+                }
+                else {
+                    $.ajax({
+                        url: '/MVCAjax/Register',
+                        type: 'POST',
+                        data: JSON.stringify(user),
+                        contentType: 'application/json',
+                        success: function (data) {
+                            alert(data);
+                            window.location.href = '/MVCAjax/Login';
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+
+
+
+}

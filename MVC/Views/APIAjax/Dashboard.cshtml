@@ -1,0 +1,289 @@
+@model List<API.Models.tblEmployee>
+@{
+    Layout = "~/Views/Shared/_customLayout.cshtml";
+}
+
+
+
+<h2>Welcome Admin @ViewData["user_id"]🧑🏻‍💻</h2>
+
+<a asp-controller="APIAjax" asp-action="login" class="btn btn-warning">Logout</a>
+
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <th>User Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
+<div id="editForm" style="display:none;">
+    <h2>Edit Employee</h2>
+    <form id="EditEmployeeForm" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="empId">Employee ID:</label>
+            <input type="text" class="form-control" id="empId" name="empId" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empName">Employee Name:</label>
+            <input type="text" class="form-control" id="empName" name="empName" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empGender">Gender:</label>
+            <input type="text" class="form-control" id="empGender" name="empGender" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empDOB">Date of Birth:</label>
+            <input type="text" class="form-control" id="empDOB" name="empDOB" readonly>
+        </div>
+        <div class="form-group">
+            <label for="empImage">Image:</label>
+            <input type="file" class="form-control" id="empImage" name="empImage" accept="image/*" readonly>
+            <img id="previewImage" style="max-width: 100px; max-height: 100px;" />
+        </div>
+        <div class="form-group">
+            <label for="empUID">User ID:</label>
+            <input type="text" class="form-control" id="empUID" name="empUID" readonly>
+        </div>
+            <div class="form-group">
+            <div>
+                <label>Department</label>
+                <select class="form-control" id="empDepartment" name="empDepartment">
+                    <option value="">Select Department</option>
+                </select>
+            </div>
+
+        </div>
+        <div class="form-group">
+            <label>Shifts:</label>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="shift1" name="shift" value="M">
+                <label class="form-check-label" for="shift1">Morning</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="shift2" name="shift" value="A">
+                <label class="form-check-label" for="shift2">Afternoon</label>
+            </div>
+        </div><br>
+        <button type="button" class="btn btn-primary" id="UpdateEmployeeButton">Update Employee</button>
+        <button type="button" class="btn btn-secondary" id="CancelEditButton">Cancel</button><br>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            var uid=0;
+            loadData();
+            setTimeout(loadCity, 2000);
+            var photopath = "";
+            @* setInterval(loadData, 10000); *@
+            function loadCity(){
+                $.ajax({
+                url: 'https://localhost:7022/api/AjaxAPI/GetDepartments',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (Array.isArray(data)) {
+                        var dropdown = $('#empDepartment');
+                        dropdown.empty().append($('<option value="">Select Department</option>'));
+                        data.forEach(function (department) {
+                            dropdown.append($('<option>').val(department.value).text(department.text));
+                        });
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching departments:', status, error);
+                }
+            });
+            }
+            function loadData() {
+                $.ajax({
+                    url: 'https://localhost:7022/api/AjaxAPI/GetAllEmployeeDetails',
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function (data) {
+                        var EmployeeTable = $('#EmployeeTable tbody');
+                        EmployeeTable.empty();
+                        data.forEach(function (emp) {
+                            var row = '<tr>';
+                            row += '<td>' + emp.c_empid + '</td>';
+                            row += '<td>' + emp.c_empname + '</td>';
+                            row += '<td>' + emp.c_empgender + '</td>';
+                            row += '<td>' + new Date(emp.c_dob).toLocaleDateString() + '</td>';
+                            row += '<td>' + emp.c_shift + '</td>';
+                            row += '<td>' + emp.depname + '</td>';
+                            row += '<td><img src="' + emp.c_img + '" alt="Employee Image" style="max-width: 100px; max-height: 100px;" /></td>';
+                            row += '<td>' + emp.c_username + '</td>';
+                            @* row += '<td><a href="#" class="edit-link" data-id="' + emp.c_empid + '">Edit</a></td>'; *@
+                            row += '<td><button class="btn btn-info edit-link" data-id="' + emp.c_empid + '">Edit</button></td>';
+                            row += '<td><button class="btn btn-danger delete" data-id="' + emp.c_empid + '">Delete</button></td>';
+                            row += '</tr>';
+                            EmployeeTable.append(row);
+                        });
+
+
+                    }
+                });
+            }
+            $('#UpdateEmployeeButton').click(function () {
+                $('#editForm').hide();
+            });
+
+            $('#CancelEditButton').click(function () {
+                $('#editForm').hide();
+            });
+
+            
+            $('#UpdateEmployeeButton').on('click', function () {
+                var empId = $('#empId').val();
+                var empName = $('#empName').val();
+                var empGender = $('#empGender').val();
+                var empDOB = $('#empDOB').val();
+                var empUID = $('#empUID').val();
+                var empDepartment = $('#empDepartment').val();
+                @* var empImage = $('#empImage').val(); *@
+                var selectedShifts = [];
+                if ($('#shift1').is(':checked')) {
+                    selectedShifts.push('M');
+                }
+
+                if ($('#shift2').is(':checked')) {
+                    selectedShifts.push('A');
+                }
+                var shift = selectedShifts.join(',');
+
+                var formData = new FormData();
+                formData.append('c_empid', empId);
+                formData.append('c_empname', empName);
+                formData.append('c_empgender', empGender);
+                formData.append('c_dob', empDOB);
+                formData.append('c_uid', uid);
+                formData.append('c_depart', empDepartment);
+                @* formData.append('c_img', empImage); *@
+                formData.append('c_shift', shift);
+                var files = $('#empImage')[0].files;
+                if (files.length == 0) {
+
+                    var file = new File([], photopath, { type: 'image/jpg' });
+
+                    var dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+
+                    document.getElementById('empImage').files = dataTransfer.files;
+                    formData.append('imgFile', $('#empImage').get(0).files[0]);
+                }
+                else {
+                    formData.append('imgFile', files[0]);
+                }
+                console.log($('#empImage').get(0).files[0]);
+                $.ajax({
+                    url: 'https://localhost:7022/api/AjaxAPI/UpdateEmployee',
+                    type: 'POST',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        alert('Employee details updated successfully');
+                        setTimeout(loadData,2000);
+                    }
+                });
+            });
+
+
+
+
+            $(document).on('click', '.edit-link', function () {
+                var empId = $(this).data('id');
+                $('#editForm').show();
+
+                $.ajax({
+                    url: 'https://localhost:7022/api/AjaxAPI/GetEmployeeById?id=' + empId,
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { id: empId },
+                    success: function (employee) {
+                        var formattedDate = new Date(employee.c_dob).toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: '2-digit',
+                            day: '2-digit'
+                        });
+                        $('#empId').val(employee.c_empid);
+                        $('#empName').val(employee.c_empname);
+                        $('#empDOB').val(formattedDate);
+                        $('#empGender').val(employee.c_empgender);
+                        $('#empUID').val(employee.c_username);
+                        $('#empDepartment').val(employee.c_depart);
+                        $('#shift1').prop('checked', employee.c_shift.includes('M'));
+                        $('#shift2').prop('checked', employee.c_shift.includes('A'));
+                        uid=employee.c_uid;
+
+                        @* $('#empImage').val(employee.c_img); *@
+                        $('#previewImage').attr('src', employee.c_img);
+                        photopath = employee.c_img;
+                    }
+                });
+            });
+            function loadCity(){
+                $.ajax({
+                url: 'https://localhost:7022/api/AjaxAPI/GetDepartments',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (Array.isArray(data)) {
+                        var dropdown = $('#empDepartment');
+                        dropdown.empty().append($('<option value="">Select Department</option>'));
+                        data.forEach(function (department) {
+                            dropdown.append($('<option>').val(department.value).text(department.text));
+                        });
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching departments:', status, error);
+                }
+            });
+            }
+            
+
+            $('#EmployeeTable').on('click', '.delete', function () {
+                var c_empid = $(this).data('id');
+
+                if (confirm('Are you sure you want to delete this book?')) {
+                    $.ajax({
+                        url: 'https://localhost:7022/api/AjaxAPI/DeleteEmployee?id=' + c_empid,
+                        type: 'POST',
+                        success: function (data) {
+                            console.log('Delete success:', data);
+                            loadData();
+                            alert("Employee Deleted Successfully");
+                        },
+                        error: function (xhr, status, error) {
+                            console.error('Delete error:', error);
+                            alert('Error deleting Employee. Please check the console for details.');
+                        }
+                    });
+                }
+            });
+        });
+        @* }); *@
+    </script>
+}

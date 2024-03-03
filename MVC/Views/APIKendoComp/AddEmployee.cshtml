@@ -1,0 +1,123 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Add Employee</h2>
+    <form id="formAddEmployee" asp-action="AddEmployee" enctype="multipart/form-data">
+        <div class="form-group">
+            <p>Employee Name</p>
+            <input kendo-textbox asp-for="c_empname" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Employee Gender</p>
+            <div style="display: flex; gap:20px; align-items:center;">
+                <input id="txtMGender" name="c_empgender" type="radio" value="Male">
+                <input id="txtFGender" name="c_empgender" type="radio" value="Female">
+                <input id="txtOGender" name="c_empgender" type="radio" value="Other">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Dob</p>
+            <input id="txtDob" kendo-datepicker asp-for="c_dob" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Shift</p>
+            <div>
+                <input id="shiftA" type="checkbox" name="c_shift" value="A">
+                <input id="shiftM" type="checkbox" name="c_shift" value="M">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Department</p>
+            <select id="txtDepart" kendo-dropdownlist asp-for="c_depart" style="width: 100%">
+                <option value="1">CEO</option>
+                <option value="2">Testing</option>
+                <option value="3">R&D</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Pic</p>
+            <input id="filePicker" kendo-upload asp-for="imgFile">
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Add Employee">
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#txtMGender").kendoRadioButton({
+                label: "Male",
+                size: "50px"
+            });
+
+            $("#txtFGender").kendoRadioButton({
+                label: "Female",
+                size: "20px"
+            });
+
+            $("#txtOGender").kendoRadioButton({
+                label: "Other",
+                size: "20px"
+            });
+
+            $("#txtDob").kendoDatePicker({
+                format: "yyyy-MM-dd"
+            });
+
+            $("#shiftA").kendoCheckBox({
+                label: "A",
+                size: "50px",
+                rounded: "large"
+            });
+
+            $("#shiftM").kendoCheckBox({
+                label: "M",
+                size: "large",
+                rounded: "large"
+            });
+
+            $("#txtDepart").kendoDropDownList();
+
+            $("#filePicker").kendoUpload();
+
+            
+            $("#formAddEmployee").submit(function (e) {
+                e.preventDefault();
+                
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "https://localhost:7022/api/APIKendoComp/AddEmployee",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function (response) {
+                        if(response){
+                            alert("Employee added successfully!");
+                            debugger
+                            window.location.href = "/APIKendoComp/Employee";
+                        }
+                        else{
+                            alert("Some Error occurred!");
+                        }
+                        
+                        
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error:", textStatus, errorThrown);
+                        alert("Error adding employee. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+}

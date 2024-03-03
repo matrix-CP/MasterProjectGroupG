@@ -248,7 +248,8 @@
                 $("input[name='c_shift']:checked").each(function () {
                     checkedShift.push($(this).val());
                 });
-                $("#hiddenShift").val(checkedShift.join(','));
+                $("#hiddenShift").val(checkedShift.join(","));
+                debugger
                 // Submit the form
                 $("#fruitForm").submit();
             });

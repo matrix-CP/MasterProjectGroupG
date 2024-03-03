@@ -1,0 +1,154 @@
+@model MVC.Models.tblEmployee
+@{
+    Layout = "~/Views/Shared/_MVCKendoComp.cshtml";
+}
+<div>
+    <h2>Update Employee</h2>
+    <form id="updateEmployeeForm" asp-action="UpdateEmployee" enctype="multipart/form-data">
+        <input class="form-control" hidden type="text" asp-for="c_empid">
+
+        <div class="form-group">
+            <p>Employee Name</p>
+            <input id="empName" kendo-textbox asp-for="c_empname" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Gender</p>
+            <div>
+                <input id="txtMGender" name="c_empgender" type="radio" value="Male">
+                @* <label for="txtMGender">Male</label> *@
+                <input id="txtFGender" name="c_empgender" type="radio" value="Female">
+                @* <label for="txtFGender">Female</label> *@
+                <input id="txtOGender" name="c_empgender" type="radio" value="Other">
+                @* <label for="txtOGender">Other</label> *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Dob</p>
+            <input id="empDob" kendo-datepicker asp-for="c_dob" style="width: 100%">
+        </div>
+
+        <div class="form-group">
+            <p>Shift</p>
+            <div>
+                <input id="A" type="checkbox" name="c_shift" value="A"  />
+                @* <label for="A">A</label> *@
+                <input id="M" type="checkbox" name="c_shift" value="M" />
+                @* <label for="M">M</label> *@
+            </div>
+        </div>
+
+        <div class="form-group">
+            <p>Department</p>
+            <select id="empDepartment" kendo-dropdownlist asp-for="c_depart" style="width: 100%">
+                <option value="1">CEO</option>
+                <option value="2">Testing</option>
+                <option value="3">R&D</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <p>Employee Pic</p>
+            <input id="empPic" kendo-upload asp-for="imgFile">
+            <br>
+            <img src="" alt="Not Found" width="200" id="imageupload"/>
+        </div>
+
+        <input class="btn btn-success" type="submit" value="Update Employee">
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#empName").kendoTextBox();
+            $("#empDob").kendoDatePicker();
+            $("#empDepartment").kendoDropDownList();
+            $("#empPic").kendoUpload();
+
+            $("#txtMGender").kendoRadioButton({
+                label: "Male",
+                size: "50px"
+            });
+
+            $("#txtFGender").kendoRadioButton({
+                label: "Female",
+                size: "20px"
+            });
+
+            $("#txtOGender").kendoRadioButton({
+                label: "Other",
+                size: "20px"
+            });
+
+            $("#A").kendoCheckBox({
+                label: "A",
+                size: "large",
+                rounded: "large"
+            });
+
+            $("#M").kendoCheckBox({
+                label: "M",
+                size: "large",
+                rounded: "large"
+            });
+
+      
+            function LoadEmployeeDetails() {
+                var settings = {
+                    "url": "https://localhost:7022/api/APIKendoComp/GetEmployee/" + @ViewBag.id,
+                    "method": "GET",
+                    "timeout": 0,
+                    @* "headers": { "Authorization": 'Bearer ' + localStorage.getItem('token') } *@
+                };
+
+                $.ajax(settings).done(function (response) {
+                    $("#c_empid").val(response.c_empid);
+                    $("#empName").val(response.c_empname);
+                    $("#empDob").val(response.c_dob.split('T')[0]);
+        @* $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
+                    $("#c_dob").val(response.c_dob); *@
+                        $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
+                    $("#empDepartment").val(response.c_depart);
+                    $.each(response.c_shift, function (index, value) {
+                        $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
+                    });
+                    $('#imageupload').attr('src', response.c_img);
+                });
+
+            }
+            LoadEmployeeDetails();
+            $("#updateEmployeeForm").submit(function (e) {
+                e.preventDefault();
+
+                // Extract employee ID from the hidden input field
+                var empId = $("#c_empid").val();
+
+                var formData = new FormData(this);
+
+                $.ajax({
+                    url: "https://localhost:7022/api/APIKendoComp/UserUpdateEmployee/" ,
+                    method: "post",
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    success: function (response) {
+                        if(response){
+                            alert("Employee Updated Successfully!");
+                            window.location.href = "/APIKendoComp/Admin";
+                        }else{
+                            alert("Some error occured!");
+                        }
+                        
+                        
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        console.error("Error:", textStatus, errorThrown);
+                        alert("Error updating employee. Please try again.");
+                    }
+                });
+            });
+        });
+    </script>
+}

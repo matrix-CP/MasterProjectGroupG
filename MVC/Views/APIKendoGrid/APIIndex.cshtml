@@ -1,0 +1,178 @@
+@{
+    Layout = "~/Views/Shared/_customLayout.cshtml";
+}
+@model List<MVC.Models.tblEmployee> 
+
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.common.min.css" />
+<link rel="stylesheet" href="https://kendo.cdn.telerik.com/2021.2.616/styles/kendo.default.min.css" />
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://kendo.cdn.telerik.com/2021.2.616/js/kendo.all.min.js"></script>
+
+<div id="grid">
+
+</div>
+
+@section Scripts{
+    <script>
+        $(document).ready(function(){
+            var dataSource =new kendo.data.DataSource({
+                transport:{
+                    read:{
+                        url:"https://localhost:7022/api/APIKendoGrid/FetchAllItem",
+                         type:"GET", 
+                        dataType:"json"
+                    },
+                    create:{
+                        url:"https://localhost:7022/api/APIKendoGrid/AddEmployeeGrid",
+                        type:"PUT",
+                        contentType: "application/json"
+
+                    },
+                    update:{
+                        url:function(data){
+                            return "https://localhost:7022/api/APIKendoGrid/edit/" + data.c_empid;
+                        },
+                       
+                        type:"PUT",
+                        contentType: "application/json"
+
+                    },
+                    destroy:{
+                        url:function(data){
+                            return "https://localhost:7022/api/APIKendoGrid/delete/" + data.c_empid;
+                        },
+                        type:"Delete",
+                        contentType: "application/json"
+
+                    },
+                    parameterMap : function (data, type){
+                    if(type !== "read"){
+                        return JSON.stringify(data);
+                    }
+                }
+                },
+                pageSize: 10,
+                schema: {
+                    model: {
+                         id: "c_empid",
+                    fields: {
+                        c_empid: {type: "number", editable: false, nullable: false},
+                        c_empname: {type: "string", validation: {required: true}},
+                        c_empgender: {type: "string", validation: {required: true}},
+                        c_dob: {type: "date", validation: {required: true}},
+                        c_shift: {type: "string", validation: {required: true}},
+                        c_img: {type: "string", validation: {required: true}},
+                        imgFile: { type: "file", validation: { required: true } },
+                        c_depart: {type: "number", validation: {required: true}}
+                    }
+                        
+                    }
+                }
+
+            });
+            
+            $("#grid").kendoGrid({
+                dataSource:dataSource,
+                 columns: [
+                {field: "c_empid", title: "emp ID"},
+                {field: "c_empname", title: "emp Name"},
+                {field: "c_empgender", title: "c_empgender" ,editor: genderTypeRadioEditor }, 
+                {field: "c_dob", title: "c_dob"},
+                {field: "c_shift", title: "c_shift" ,  editor: shiftCheckboxEditor},
+                @* {field: "c_img", title: "c_img"}, *@
+                {
+                        field: "imgFile", title: "emp Photo",
+                        editor: imageupload,
+                        template: "<img src='#= c_img #' alt='emp Photo' style='max-width: 100px; max-height: 100px;'/>"
+                },
+                {field: "c_depart", title: "c_depart" , editor:deptDropDownEditor},
+                {command: ["edit", "destroy"], title: "&nbsp;", width: "200px"}
+            ],
+                editable:"popup",
+                toolbar:["create"],
+                pageable:true,
+                sortable:true,
+                filterable:true,
+                 edit:function(e){
+                    if(e.model.isNew()){
+                        e.container.find(".k-grid-update").text("create");
+                    }
+                }
+            });
+
+            
+
+               
+
+           
+
+
+             function genderTypeRadioEditor(container, options) {
+            $('<input type="radio" name="' + options.field + '" value="Male" required/> Male' +
+                '<input type="radio" name="' + options.field + '" value="Female" required/> Female'+
+                 '<label  name=" value="Female" required/>' )
+            .appendTo(container);
+        }
+           
+
+        function shiftCheckboxEditor(container, options) {
+                
+                var checkboxWrapper = $('<div>').appendTo(container);
+
+                
+                checkboxWrapper.kendoCheckBoxGroup({
+                    items: [
+                        { label: "M", value: "M" },
+                        { label: "A", value: "A" },
+                        
+                    ]
+                });
+                var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
+                var c_shift = options.model.c_shift || []; 
+                checkboxGroup.value(c_shift); 
+                checkboxGroup.bind("change", function (e) {
+                    var selectedShifts = e.sender.value();
+                    @* var shifts=selectedShifts.split(",");  *@
+                    options.model.set("c_shift", shifts);
+                });
+            }
+
+             function imageupload(container, options) {
+                $('<input name="imgFile" type="file" id="imgFile" data-role="upload" data-async=\'{ "saveUrl": "https://localhost:7022/api/APIKendoGrid/UploadPhoto", "autoUpload": true }\' class="k-input k-textbox">').appendTo(container);
+                @* imgFile.on("success", function(e) {
+    
+                var imageUrl = e.response.imageUrl;
+                var grid = $("#grid").data("kendoGrid");
+                var dataItem = grid.dataItem(container.closest("tr"));
+                dataItem.set("c_img", imageUrl);
+            }); *@
+            }
+
+             function deptDropDownEditor(container, options) {
+            $('<input required data-text-field="c_depname" data-value-field="c_depid" data-bind="value:' + options.field + '"/>')
+                .appendTo(container)
+                .kendoDropDownList({
+                    autoBind: false,
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "https://localhost:7022/api/APIKendoGrid/FetchAlldept",
+                                dataType: "json"
+                            }
+                        }
+                    }
+                });
+        }
+            
+            dataSource.bind("requestEnd",function(e){
+                if(e.type === "create" || e.type === "update" || e.type === "destroy") {
+                    dataSource.read();
+                }
+            });
+             
+            $("#grid").on("click", ".k-grid-cancel-changes", function() {
+                dataSource.cancelChanges();
+            });
+        });
+    </script>
+    }

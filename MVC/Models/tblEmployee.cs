@@ -11,7 +11,7 @@ namespace MVC.Models
         public int c_empid{get; set;}
         public string c_empname{get; set;}
         public string c_empgender{get; set;}
-        public DateTime c_dob{get; set;}
+        public DateTime c_dob{get; set;} = DateTime.Now;
         public List<string>? c_shift{get; set;}
         // public string? c_shiftkendo;
         public int c_depart{get; set;}

@@ -10,6 +10,7 @@
             padding: 0;
             margin: 0;
             box-sizing: border-box;
+             background: linear-gradient(270deg,#52a3e5, #0a487a, #04054b, #02032b);
         }
         .box{
             display: flex;
@@ -125,6 +126,9 @@
             border: 2px solid white;
             box-shadow: 6px 6px 12px black;
             box-shadow: inset 2px 0.5px 8px black;
+            position: absolute;
+            top: 480px;
+            left: 190px;
             cursor: pointer;
             border-radius: 12px;
         }
@@ -157,25 +161,26 @@
                 <form asp-action="Register" id="form">
                 <div class="field">
                         <input type="text" id="c_uname" asp-for="c_uname" placeholder="Username"/>
-                        <input type="hidden" id="hiddenName" name="c_uname" asp-for="c_uname"/>
+                        @* <input type="hidden" id="hiddenName" name="c_uname" asp-for="c_uname"/> *@
                     </div>
                     <div class="field">
                         <input type="text" id="c_uemail" asp-for="c_uemail" placeholder="Email Id"/>
-                        <input type="hidden" id="hiddenEmail" name="c_uemail" asp-for="c_uemail"/>
+                        @* <input type="hidden" id="hiddenEmail" name="c_uemail" asp-for="c_uemail"/> *@
                     </div>
                     <div class="field">
                         <input type="password" id="c_password" asp-for="c_password" placeholder="Password"/>
-                        <input type="hidden" id="hiddenPassword" name="c_password" asp-for="c_password"/>
+                        @* <input type="hidden" id="hiddenPassword" name="c_password" asp-for="c_password"/> *@
                     </div>
                     <div class="field">
                         <input type="password" id="c_chkpassword" asp-for="c_chkpassword" placeholder="Confirm Password"/>
-                        <input type="hidden" id="hiddenChkPassword" name="c_chkpassword" asp-for="c_chkpassword"/>
+                        @* <input type="hidden" id="hiddenChkPassword" name="c_chkpassword" asp-for="c_chkpassword"/> *@
                     </div>
                     <p class="reg">Already have account? <a asp-action="Login">Log In</a></p>
+                    <input id="addBtn" class="btn" type="submit" value="Register"/>
                 </form>
             </div>
             <div class="button-box">
-                <input id="addBtn" class="btn" type="submit" value="Register"/>
+               
             </div>
         </div>
     </div>
@@ -202,13 +207,13 @@
      <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 <script>
     $(document).ready(function(){
-        $("#addBtn").click(function(){
+        @* $("#addBtn").click(function(){
             $("#hiddenName").val($("#c_uname").val());
             $("#hiddenEmail").val($("#c_uemail").val());
             $("#hiddenPassword").val($("#c_password").val());
             $("#hiddenChkPassword").val($("#c_chkpassword").val());
             $("#form").submit();
-        });
+        }); *@
 
         $(document).on('submit','form',function(e){
             if($('#password').val()!=$('#conpassword').val()){

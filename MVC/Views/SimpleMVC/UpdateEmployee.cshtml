@@ -8,6 +8,8 @@
             padding: 0;
             margin: 0;
             box-sizing: border-box;
+                        background: linear-gradient(270deg,#52a3e5, #0a487a, #04054b, #02032b);
+
         }
         .box{
             display: flex;
@@ -149,6 +151,25 @@
             border: 2px solid white;
             box-shadow: 6px 6px 12px black;
             box-shadow: inset 2px 0.5px 8px black;
+            position: absolute;
+            top:486px;
+           
+            cursor: pointer;
+            border-radius: 12px;
+        }
+         .btn-back{
+            margin-top: 80px;
+            font-size: 22px;
+            padding: 12px 32px;
+            color: white;
+            background-color: rgb(10, 3, 85);
+            font-weight: 600;
+            border: 2px solid white;
+            box-shadow: 6px 6px 12px black;
+            box-shadow: inset 2px 0.5px 8px black;
+            position: absolute;
+            top:486px;
+            left:320px;
             cursor: pointer;
             border-radius: 12px;
         }
@@ -183,45 +204,46 @@
                 <form id="fruitForm" asp-action="UpdateEmployee" enctype="multipart/form-data">
 
                     <input class="input" id="c_empid" type="text" asp-for="c_empid" hidden placeholder="id">
-                    <input class="hidden" type="text" asp-for="c_empid" hidden id="hiddenId">
+                    @* <input class="hidden" type="text" asp-for="c_empid" hidden id="hiddenId"> *@
 
                     <input type="file" hidden id="imgFile" asp-for="imgFile">
-                    <input type="hidden" id="hiddenImgFile" name="imgFile" asp-for="imgFile">
+                    @* <input type="hidden" id="hiddenImgFile" name="imgFile" asp-for="imgFile"> *@
 
                     <div class="field">
                         <input class="input" id="c_empname" asp-for="c_empname" placeholder="Name" type="text" >
-                        <input type="hidden" id="hiddenName" name="c_empname" asp-for="c_empname">
+                        @* <input type="hidden" id="hiddenName" name="c_empname" asp-for="c_empname"> *@
                     </div>
                     <div class="field">
                         <div class="input">
                             <input name="c_empgender" id="male" asp-for="c_empgender" value="Male" type="radio"><label for=""> Male</label>
                             <input name="c_empgender" id="female" asp-for="c_empgender" value="Female" type="radio"><label for=""> Female</label>
                             <input name="c_empgender" id="other" asp-for="c_empgender" value="Other" type="radio"><label for=""> Other</label>
-                            <input type="hidden" id="hiddenGender" name="c_empgender" asp-for="c_empgender">
+                            @* <input type="hidden" id="hiddenGender" name="c_empgender" asp-for="c_empgender"> *@
                         </div>
                     </div>
                     <div class="field">
                         <div class="input">
                             <input type="checkbox" id="afternoon" name="c_shift" value="A" checked='@Model.c_shift.Contains("A")'><label for=""> A</label>
                             <input type="checkbox" id="morning" name="c_shift" value="M" checked='@Model.c_shift.Contains("M")'><label for=""> M</label>
-                            <input type="hidden" id="hiddenShift" name="c_shift" asp-for="c_shift">
+                            @* <input type="hidden" id="hiddenShift" name="c_shift" asp-for="c_shift"> *@
                         </div>
                     </div>
                     <div class="field">
                         <input class="input" name="c_dob"  id="c_dob" asp-for="c_dob" type="date">
-                        <input name="c_dob" id="hiddenDob" asp-for="c_dob" type="hidden">
+                        @* <input name="c_dob" id="hiddenDob" asp-for="c_dob" type="hidden"> *@
 
                     </div>
                     <div class="field">
                         <select id="c_depart" class="drop" asp-for="c_depart" asp-items="@Model.depList"></select>
-                            <input type="hidden" id="hiddenDepart" name="c_depart" asp-for="c_depart">
+                            @* <input type="hidden" id="hiddenDepart" name="c_depart" asp-for="c_depart"> *@
                     </div>
                     <p class="reg"></p>
+                    <input id="addFruitBtn" type="submit" class="btn" value="Update"/>
+                     <a asp-action="Admin" class="btn-back">Back</a>
                 </form>
             </div>
             <div class="button-box">
-                <input id="addFruitBtn" type="submit" class="btn" value="Update"/>
-                <a asp-action="Admin" class="btn">Back</a>
+                
             </div>
         </div>
     </div>
@@ -238,7 +260,7 @@
                 $("#c_img").attr("src", x);
             });
 
-            $("#addFruitBtn").click(function () {
+            @* $("#addFruitBtn").click(function () {
                 // Update hidden inputs with the latest values
                 $("#hiddenName").val($("#c_empname").val());
                 $("#hiddenDepart").val($("#c_depart").val());
@@ -254,7 +276,7 @@
                 $
                 // Submit the form
                 $("#fruitForm").submit();
-            });
+            }); *@
         });
     </script>
 

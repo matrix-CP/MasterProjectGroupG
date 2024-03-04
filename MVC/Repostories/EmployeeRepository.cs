@@ -63,6 +63,7 @@ namespace MVC.Repostories
             string shifts = string.Join(',', employee.c_shift);
             cmd.Parameters.AddWithValue("@shift", shifts);
             cmd.Parameters.AddWithValue("@dept", employee.c_depart);
+            
             cmd.Parameters.AddWithValue("@img", employee.c_img);
             cmd.ExecuteNonQuery();
             conn.Close();

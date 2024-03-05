@@ -139,13 +139,13 @@ namespace MVC.Controllers
         {
             tblUser users = _userRepo.Login(user);
             Console.WriteLine(users != null);
-            if(users != null)
+            if(users.c_uid != 0)
             {
-                if(users.c_role.Equals("user"))
+                if(users.c_role.Equals("admin"))
                 {
-                    return RedirectToAction("Employee");
-                }else{
                     return RedirectToAction("Admin");
+                }else{
+                    return RedirectToAction("Employee");
                 }
                 
             }

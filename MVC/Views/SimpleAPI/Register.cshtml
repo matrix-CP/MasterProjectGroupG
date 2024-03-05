@@ -29,6 +29,7 @@
         </div>
         <br />
         <button type="button" class="btn btn-primary" id="RegisterButton">Register</button>
+        <button type="button" class="btn btn-primary" id="CancelEmployeeButton">Login</button>
     </form>
 </div>
 
@@ -74,6 +75,10 @@
                     });
                 }
             });
+
+            $("#CancelEmployeeButton").click(function () {
+                window.location.href = "/SimpleAPI/Login";
+        });
         });
     </script>
 

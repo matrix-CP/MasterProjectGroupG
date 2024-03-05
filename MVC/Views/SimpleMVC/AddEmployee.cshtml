@@ -9,6 +9,8 @@
             padding: 0;
             margin: 0;
             box-sizing: border-box;
+                        background: linear-gradient(270deg,#52a3e5, #0a487a, #04054b, #02032b);
+
         }
         .box{
             display: flex;
@@ -150,6 +152,9 @@
             border: 2px solid white;
             box-shadow: 6px 6px 12px black;
             box-shadow: inset 2px 0.5px 8px black;
+            position: absolute;
+            top:486px;
+            left:180px;
             cursor: pointer;
             border-radius: 12px;
         }
@@ -186,41 +191,42 @@
                     <input class="input" type="text" hidden placeholder="id">
 
                     <input type="file" hidden id="imgFile" asp-for="imgFile">
-                    <input type="hidden" id="hiddenImgFile" name="imgFile" asp-for="imgFile">
+                    @* <input type="hidden" id="hiddenImgFile" name="imgFile" asp-for="imgFile"> *@
 
                     <div class="field">
                         <input class="input" id="c_empname" asp-for="c_empname" placeholder="Name" type="text" >
-                        <input type="hidden" id="hiddenName" name="c_empname" asp-for="c_empname">
+                        @* <input type="hidden" id="hiddenName" name="c_empname" asp-for="c_empname"> *@
                     </div>
                     <div class="field">
                         <div class="input">
                             <input name="c_empgender" id="male" asp-for="c_empgender" value="Male" type="radio"><label for=""> Male</label>
                             <input name="c_empgender" id="female" asp-for="c_empgender" value="Female" type="radio"><label for=""> Female</label>
                             <input name="c_empgender" id="other" asp-for="c_empgender" value="Other" type="radio"><label for=""> Other</label>
-                            <input type="hidden" id="hiddenGender" name="c_empgender" asp-for="c_empgender">
+                            @* <input type="hidden" id="hiddenGender" name="c_empgender" asp-for="c_empgender"> *@
                         </div>
                     </div>
                     <div class="field">
                         <div class="input">
                             <input type="checkbox" id="afternoon" name="c_shift" value="A"><label for=""> A</label>
                             <input type="checkbox" id="morning" name="c_shift" value="M"><label for=""> M</label>
-                            <input type="hidden" id="hiddenShift" name="c_shift" asp-for="c_shift">
+                            @* <input type="hidden" id="hiddenShift" name="c_shift" asp-for="c_shift"> *@
                         </div>
                     </div>
                     <div class="field">
                         <input class="input" name="c_dob"  id="c_dob" asp-for="c_dob" type="date">
-                        <input name="c_dob" id="hiddenDob" asp-for="c_dob" type="hidden">
+                        @* <input name="c_dob" id="hiddenDob" asp-for="c_dob" type="hidden"> *@
 
                     </div>
                     <div class="field">
                         <select id="c_depart" class="drop" asp-for="c_depart" asp-items="@Model.depList"></select>
-                            <input type="hidden" id="hiddenDepart" name="c_depart" asp-for="c_depart">
+                            @* <input type="hidden" id="hiddenDepart" name="c_depart" asp-for="c_depart"> *@
                     </div>
                     <p class="reg"></p>
+                     <input id="addFruitBtn" type="submit" class="btn" value="Add"/>
                 </form>
             </div>
             <div class="button-box">
-                <input id="addFruitBtn" type="submit" class="btn" value="Add"/>
+               
             </div>
         </div>
     </div>
@@ -236,7 +242,7 @@
                 $("#displayImg").attr("src", x);
             });
 
-            $("#addFruitBtn").click(function () {
+            @* $("#addFruitBtn").click(function () {
                 // Update hidden inputs with the latest values
                 $("#hiddenName").val($("#c_empname").val());
                 $("#hiddenDepart").val($("#c_depart").val());
@@ -252,7 +258,7 @@
                 debugger
                 // Submit the form
                 $("#fruitForm").submit();
-            });
+            }); *@
         });
     </script>
 

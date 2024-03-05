@@ -45,6 +45,12 @@
             $('#tableStudents').append(emps);
             console.log(response);
         });
+
+        $('#logout').click(function () {
+        localStorage.removeItem('token');
+        window.location = "/SimpleAPI/Login";
+    });
+        
     }
 
     function DeleteStudent(id) {
@@ -101,6 +107,8 @@ $(document).ready(function () {
             });
         }
     });
+
+    
 });
 
 
@@ -196,6 +204,7 @@ $(document).ready(function () {
              
             </tbody>
         </table>
+        <button id="logout" class="btn btn-danger">Logout</button>
     </div>
 </div>
 

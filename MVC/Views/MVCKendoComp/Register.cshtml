@@ -74,6 +74,7 @@
 
         <div>
             <input type="submit" value="Register" id="btnSubmit" class="btn btn-success" />
+            <a id="logButton" class="btn btn-primary">Login</a>
         </div>
     </div>
 }
@@ -185,6 +186,13 @@
                 label: {
                     content: "Confirm Password",
                     floating:true
+                }
+            });
+
+            $("#logButton").kendoButton({
+                click: function () {
+              
+                    window.location.href = "/MVCKendoComp/Login";
                 }
             });
 

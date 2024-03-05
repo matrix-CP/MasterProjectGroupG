@@ -33,6 +33,7 @@
 
         <div>
             <input type="submit" value="Register" id="btnSubmit" class="btn btn-success" />
+            <a id="logButton" class="btn btn-primary">Login</a>
         </div>
     </div>
 }
@@ -68,6 +69,13 @@
             });
             $("#btnSubmit").kendoButton({
                 themeColor: "success"
+            });
+
+            $("#logButton").kendoButton({
+                click: function () {
+              
+                    window.location.href = "/APIKendoComp/Login";
+                }
             });
 
             $(document).on("click", "#btnSubmit", function (e) {

@@ -448,8 +448,8 @@ namespace MVC.Repostories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "SELECT c_empid, c_empname, c_empgender, c_dob, c_shift, c_depart, c_img FROM t_empmaster WHERE c_empid = @c_empid";
-            cmd.Parameters.AddWithValue("@c_empid", id);
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+            cmd.Parameters.AddWithValue("@id", id);
             NpgsqlDataReader dr = cmd.ExecuteReader();
             while(dr.Read())
             {
@@ -460,6 +460,8 @@ namespace MVC.Repostories
                 emp.c_shift = dr["c_shift"].ToString().Split(',').ToList();
                  emp.c_img = dr["c_img"].ToString();
                   emp.c_depart = Convert.ToInt32(dr["c_depart"]);
+                  emp.depname=dr["c_depname"].ToString();
+                
             }
             conn.Close();
             return emp;
@@ -491,7 +493,7 @@ namespace MVC.Repostories
             var emps = new List<tblEmployee>();
             conn.Open();
 
-            using var command = new NpgsqlCommand("SELECT c_empid, c_empname, c_empgender, c_dob, c_shift, c_depart, c_img FROM t_empmaster;", conn);
+            using var command = new NpgsqlCommand("select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid;", conn);
 
             command.CommandType = System.Data.CommandType.Text;
             using var reader = command.ExecuteReader();
@@ -506,7 +508,8 @@ namespace MVC.Repostories
                 
                 c_shift = reader["c_shift"].ToString().Split(',').ToList(),
                 c_img = reader["c_img"].ToString(),
-                c_depart = Convert.ToInt32(reader["c_depart"])
+                c_depart = Convert.ToInt32(reader["c_depart"]),
+                depname=reader["c_depname"].ToString()
                 };
                 emps.Add(tblEmployee);
             }

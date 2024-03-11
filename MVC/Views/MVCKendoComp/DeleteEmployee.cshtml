@@ -4,41 +4,30 @@
 }
 <div>
     <h2>Employee Detail</h2>
-
-    <div>
-        <label>ID:</label>
-        <span id="empId">@Model.c_empid</span>
-    </div>
-
-    <div>
-        <label>Name:</label>
-        <input id="empName" value="@Model.c_empname" />
-    </div>
-
-    <div>
-        <label>Gender:</label>
-        <input id="empGender" value="@Model.c_empgender" />
-    </div>
-
-    <div>
-        <label>Dob:</label>
-        <input id="empDob" value="@Model.c_dob.ToString("yyyy-MM-dd")" />
-    </div>
-
-    <div>
-        <label>Shift:</label>
-        <input id="empShift" value="@string.Join(',', Model.c_shift)" />
-    </div>
-
-    <div>
-        <label>Department:</label>
-        <input id="empDepartment" value="@Model.depname" />
-    </div>
-
-    <div>
-        <label>Employee Pic:</label>
-        <img id="empPic" src="@Model.c_img" alt="@Model.c_img" width="175px" />
-    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td id="empId">@Model.c_empid</td>
+                <td id="empName">@Model.c_empname</td>
+                <td id="empGender">@Model.c_empgender</td>
+                <td id="empDob">@Model.c_dob.ToString().Substring(0, 10)</td>
+                <td id="empShift">@string.Join(',', Model.c_shift)</td>
+                <td id="empDepartment">@Model.depname</td>
+                <td><img id="empPic" src="@Model.c_img" alt="@Model.c_img" width="175px"></td>
+            </tr>
+        </tbody>
+    </table>
 
     <form asp-action="Delete" asp-route-id="@Model.c_empid">
         <input type="submit" class="btn btn-danger" value="Delete" />

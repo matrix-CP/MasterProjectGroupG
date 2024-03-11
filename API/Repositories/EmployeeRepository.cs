@@ -11,6 +11,8 @@ namespace API.Repositories
     public class EmployeeRepository : CommonRepository, IEmployeeRepository
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IWebHostEnvironment _hostingEnvironment;
+
 
         public bool IsAuthenticated
         {
@@ -21,20 +23,19 @@ namespace API.Repositories
             }
         }
 
-        public EmployeeRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public EmployeeRepository(IConfiguration configuration, IHttpContextAccessor httpContextAccessor, IWebHostEnvironment hostingEnvironment)
         {
             _httpContextAccessor = httpContextAccessor;
+            _hostingEnvironment = hostingEnvironment;
         }
         public void AddEmployee(tblEmployee employee)
         {
             if (employee.imgFile != null && employee.imgFile.Length > 0)
             {
-                // var folderPath = "D://My Learning//Core MVC//MasterProjectGroupG//MVC//wwwroot//Images";
-                var folderPath = @"D:\casepoint\MasterProjectGroupG\MasterProjectGroupG\MVC\";
-                var folderPath2 = Path.Combine(folderPath, "wwwroot", "Images");
-                Console.WriteLine(folderPath2);
-                // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
-                var fullPath = Path.Combine(folderPath2, employee.imgFile.FileName);
+                var folderPath = @"G:\Shivang\CollegeWork\Sem-8\Internship_Casepoint\Git\Learn\MasterProjectGroupG (1)\MasterProjectGroupG\MVC\wwwroot";
+                var folderPath2 = Path.Combine(folderPath, "Images");
+                var filePath = Guid.NewGuid().ToString() + employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath2, filePath);
                 if (!Directory.Exists(folderPath2))
                 {
                     Directory.CreateDirectory(folderPath2);
@@ -44,8 +45,7 @@ namespace API.Repositories
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/" + employee.imgFile.FileName;
-
+                employee.c_img = "/Images/" + filePath;
 
             }
             var cmd = new NpgsqlCommand();
@@ -177,11 +177,10 @@ namespace API.Repositories
         {
             if (employee.imgFile != null && employee.imgFile.Length > 0)
             {
-                var folderPath = @"D:\casepoint\MasterProjectGroupG\MasterProjectGroupG\MVC\";
-                var folderPath2 = Path.Combine(folderPath, "wwwroot", "Images");
-                Console.WriteLine(folderPath2);
-                // var filePath = Guid.NewGuid().ToString()+employee.imgFile.FileName;
-                var fullPath = Path.Combine(folderPath2, employee.imgFile.FileName);
+                var folderPath = @"G:\Shivang\CollegeWork\Sem-8\Internship_Casepoint\Git\Learn\MasterProjectGroupG (1)\MasterProjectGroupG\MVC\wwwroot";
+                var folderPath2 = Path.Combine(folderPath, "Images");
+                var filePath = Guid.NewGuid().ToString() + employee.imgFile.FileName;
+                var fullPath = Path.Combine(folderPath2, filePath);
                 if (!Directory.Exists(folderPath2))
                 {
                     Directory.CreateDirectory(folderPath2);
@@ -191,7 +190,7 @@ namespace API.Repositories
                     employee.imgFile.CopyTo(stream);
                 }
 
-                employee.c_img = "/Images/" + employee.imgFile.FileName;
+                employee.c_img = "/Images/" + filePath;
 
             }
             else
@@ -223,8 +222,8 @@ namespace API.Repositories
             {
                 if (employee.imgFile != null && employee.imgFile.Length > 0)
                 {
-                    var folderPath = @"D:\casepoint\MasterProjectGroupG\MasterProjectGroupG\MVC\";
-                    var folderPath2 = Path.Combine(folderPath,"wwwroot", "Images");
+                    var folderPath = @"G:\Shivang\CollegeWork\Sem-8\Internship_Casepoint\Git\Learn\MasterProjectGroupG (1)\MasterProjectGroupG\MVC\wwwroot";
+                    var folderPath2 = Path.Combine(folderPath, "Images");
                     var filePath = Guid.NewGuid().ToString() + employee.imgFile.FileName;
                     var fullPath = Path.Combine(folderPath2, filePath);
                     if (!Directory.Exists(folderPath2))
@@ -370,8 +369,8 @@ namespace API.Repositories
 
                 if (updatedEmployee.imgFile != null && updatedEmployee.imgFile.Length > 0)
                 {
-                    var folderPath = @"D:\casepoint\MasterProjectGroupG\MasterProjectGroupG\MVC\";
-                    var folderPath2 = Path.Combine(folderPath,"wwwroot", "Images");
+                    var folderPath = @"G:\Shivang\CollegeWork\Sem-8\Internship_Casepoint\Git\Learn\MasterProjectGroupG (1)\MasterProjectGroupG\MVC\wwwroot";
+                    var folderPath2 = Path.Combine(folderPath, "Images");
                     var filePath = Guid.NewGuid().ToString() + updatedEmployee.imgFile.FileName;
                     var fullPath = Path.Combine(folderPath2, filePath);
                     if (!Directory.Exists(folderPath2))
@@ -416,7 +415,7 @@ namespace API.Repositories
             }
         }
 
-        
+
         #endregion
 
 
@@ -428,13 +427,13 @@ namespace API.Repositories
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
             cmd.CommandText = "INSERT INTO t_empmaster(c_empname, c_empgender, c_dob, c_shift, c_depart, c_img)VALUES (@c_empname, @c_empgender, @c_dob, @c_shift, @c_depart, @c_img);";
-            cmd.Parameters.AddWithValue("@c_empname",emp.c_empname);
-            cmd.Parameters.AddWithValue("@c_empgender",emp.c_empgender);
-            cmd.Parameters.AddWithValue("@c_dob",emp.c_dob);
-            string selectedShift=string.Join(',',emp.c_shift);
-            cmd.Parameters.AddWithValue("@c_shift",selectedShift);
-            cmd.Parameters.AddWithValue("@c_depart",emp.c_depart);
-            cmd.Parameters.AddWithValue("@c_img",emp.c_img);
+            cmd.Parameters.AddWithValue("@c_empname", emp.c_empname);
+            cmd.Parameters.AddWithValue("@c_empgender", emp.c_empgender);
+            cmd.Parameters.AddWithValue("@c_dob", emp.c_dob);
+            string selectedShift = string.Join(',', emp.c_shift);
+            cmd.Parameters.AddWithValue("@c_shift", selectedShift);
+            cmd.Parameters.AddWithValue("@c_depart", emp.c_depart);
+            cmd.Parameters.AddWithValue("@c_img", emp.c_img);
             int rowsAffected = cmd.ExecuteNonQuery();
             conn.Close();
             return rowsAffected > 0;
@@ -459,24 +458,25 @@ namespace API.Repositories
             conn.Open();
             cmd.Connection = conn;
             cmd.CommandType = System.Data.CommandType.Text;
-            cmd.CommandText = "SELECT c_empid, c_empname, c_empgender, c_dob, c_shift, c_depart, c_img FROM t_empmaster WHERE c_empid = @c_empid";
-            cmd.Parameters.AddWithValue("@c_empid", id);
+            cmd.CommandText = "select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid WHERE c_empid = @id";
+            cmd.Parameters.AddWithValue("@id", id);
             NpgsqlDataReader dr = cmd.ExecuteReader();
-            while(dr.Read())
+            while (dr.Read())
             {
                 emp.c_empid = Convert.ToInt32(dr["c_empid"]);
                 emp.c_empname = dr["c_empname"].ToString();
                 emp.c_empgender = dr["c_empgender"].ToString();
                 emp.c_dob = DateTime.Parse(dr["c_dob"].ToString());
                 emp.c_shift = dr["c_shift"].ToString().Split(',').ToList();
-                 emp.c_img = dr["c_img"].ToString();
-                  emp.c_depart = Convert.ToInt32(dr["c_depart"]);
+                emp.c_img = dr["c_img"].ToString();
+                emp.c_depart = Convert.ToInt32(dr["c_depart"]);
+                emp.depname=dr["c_depname"].ToString();
             }
             conn.Close();
             return emp;
         }
 
-         public void Updateemp(tblEmployee emp)
+        public void Updateemp(tblEmployee emp)
         {
             NpgsqlCommand cmd = new NpgsqlCommand();
             conn.Open();
@@ -485,10 +485,10 @@ namespace API.Repositories
             cmd.CommandText = "UPDATE t_empmaster SET c_empname = @c_empname ,c_empgender=@c_empgender ,c_dob=@c_dob,c_shift=@c_shift,c_img=@c_img,c_depart=@c_depart  WHERE c_empid = @c_empid";
             cmd.Parameters.AddWithValue("@c_empid", emp.c_empid);
             cmd.Parameters.AddWithValue("@c_empname", emp.c_empname);
-             cmd.Parameters.AddWithValue("@c_empgender", emp.c_empgender);
+            cmd.Parameters.AddWithValue("@c_empgender", emp.c_empgender);
             cmd.Parameters.AddWithValue("@c_dob", emp.c_dob);
-            string selectedShift=string.Join(',',emp.c_shift);
-             cmd.Parameters.AddWithValue("@c_shift", selectedShift);
+            string selectedShift = string.Join(',', emp.c_shift);
+            cmd.Parameters.AddWithValue("@c_shift", selectedShift);
             cmd.Parameters.AddWithValue("@c_img", emp.c_img);
             cmd.Parameters.AddWithValue("@c_depart", emp.c_depart);
 
@@ -497,12 +497,12 @@ namespace API.Repositories
         }
 
 
-         public List<tblEmployee> viewemp()
+        public List<tblEmployee> viewemp()
         {
             var emps = new List<tblEmployee>();
             conn.Open();
 
-            using var command = new NpgsqlCommand("SELECT c_empid, c_empname, c_empgender, c_dob, c_shift, c_depart, c_img FROM t_empmaster;", conn);
+            using var command = new NpgsqlCommand("select e.c_empid, e.c_empname, e.c_empgender, e.c_dob, e.c_shift, e.c_depart, e.c_img, d.c_depname from t_empmaster e join t_departmaster d on e.c_depart = d.c_depid", conn);
 
             command.CommandType = System.Data.CommandType.Text;
             using var reader = command.ExecuteReader();
@@ -510,14 +510,15 @@ namespace API.Repositories
             {
                 var tblEmployee = new tblEmployee
                 {
-                c_empid = Convert.ToInt32(reader["c_empid"]),
-                c_empname = reader["c_empname"].ToString(),
-                c_empgender = reader["c_empgender"].ToString(),
-                c_dob = DateTime.Parse(reader["c_dob"].ToString()),
-                
-                c_shift = reader["c_shift"].ToString().Split(',').ToList(),
-                c_img = reader["c_img"].ToString(),
-                c_depart = Convert.ToInt32(reader["c_depart"])
+                    c_empid = Convert.ToInt32(reader["c_empid"]),
+                    c_empname = reader["c_empname"].ToString(),
+                    c_empgender = reader["c_empgender"].ToString(),
+                    c_dob = DateTime.Parse(reader["c_dob"].ToString()),
+
+                    c_shift = reader["c_shift"].ToString().Split(',').ToList(),
+                    c_img = reader["c_img"].ToString(),
+                    c_depart = Convert.ToInt32(reader["c_depart"]),
+                    depname=reader["c_depname"].ToString()
                 };
                 emps.Add(tblEmployee);
             }
@@ -536,10 +537,10 @@ namespace API.Repositories
             using var reader = command.ExecuteReader();
             while (reader.Read())
             {
-                var dep  = new tblDepartment
+                var dep = new tblDepartment
                 {
                     c_depid = Convert.ToInt32(reader["c_depid"]),
-                    c_depname = reader["c_depname"].ToString(),    
+                    c_depname = reader["c_depname"].ToString(),
                 };
                 depts.Add(dep);
             }

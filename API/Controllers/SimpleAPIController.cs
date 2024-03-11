@@ -36,11 +36,11 @@ namespace API.Controllers
             Console.WriteLine(users != null);
             if(users != null)
             {
-                if(users.c_role.Equals("user"))
+                if(users.c_role.Equals("admin"))
                 {
-                    return Ok("Employee");
-                } else{
                     return Ok("Admin");
+                } else{
+                    return Ok("Employee");
                 } 
             }
             return Ok("Invalid Credentials!"); 

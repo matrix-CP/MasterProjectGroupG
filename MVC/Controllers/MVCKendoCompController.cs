@@ -14,14 +14,14 @@ namespace MVC.Controllers
     public class MVCKendoCompController : Controller
     {
         private readonly ILogger<MVCKendoCompController> _logger;
-         private readonly IUserRepository _userrepo;
-         private readonly IEmployeeRepository _empRepo;
+        private readonly IUserRepository _userrepo;
+        private readonly IEmployeeRepository _empRepo;
 
         public MVCKendoCompController(ILogger<MVCKendoCompController> logger, IUserRepository userrepo, IEmployeeRepository empRepo)
         {
             _logger = logger;
-             _userrepo = userrepo;
-             _empRepo = empRepo;
+            _userrepo = userrepo;
+            _empRepo = empRepo;
         }
 
         public IActionResult Index()
@@ -31,14 +31,20 @@ namespace MVC.Controllers
         [HttpGet]
         public IActionResult Admin()
         {
-            var employee =_empRepo.GetAllEmployee();
+            var employee = _empRepo.GetAllEmployee();
             return View(employee);
         }
         [HttpGet]
         public IActionResult Employee()
         {
-            var employee =_empRepo.GetAllEmployee();
+            var employee = _empRepo.GetAllEmployee();
             return View(employee);
+        }
+        [HttpPost]
+        public IActionResult DeleteUser(int id)
+        {
+            _empRepo.DeleteEmployee(id);
+            return RedirectToAction("Employee");
         }
 
         [HttpGet]
@@ -120,23 +126,25 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public IActionResult Login(tblUser user)
+        public IActionResult Login([FromForm]tblUser user)
         {
             tblUser users = _userrepo.Login(user);
             Console.WriteLine(users != null);
-            if(users != null)
+            if (users != null)
             {
-                if(users.c_role.Equals("user"))
+                if (users.c_role.Equals("admin"))
                 {
-                    return Json("Employee");
-                }else{
                     return Json("Admin");
                 }
-                
+                else
+                {
+                    return Json("Employee");
+                }
+
             }
 
             return Json("Invalid Credentials");
-            
+
         }
         [HttpPost]
         public IActionResult Register(tblUser user)

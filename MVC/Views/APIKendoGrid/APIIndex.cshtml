@@ -60,9 +60,10 @@
                         c_empname: {type: "string", validation: {required: true}},
                         c_empgender: {type: "string", validation: {required: true}},
                         c_dob: {type: "date", validation: {required: true}},
-                        c_shift: {type: "string", validation: {required: true}},
+                        c_shift: {type: "string[]", validation: {required: true}, defaultValue: [] },
                         c_img: {type: "string", validation: {required: true}},
                         imgFile: { type: "file", validation: { required: true } },
+                        depname: {type: "string", validation: {required: false}},
                         c_depart: {type: "number", validation: {required: true}}
                     }
                         
@@ -74,18 +75,18 @@
             $("#grid").kendoGrid({
                 dataSource:dataSource,
                  columns: [
-                {field: "c_empid", title: "emp ID"},
-                {field: "c_empname", title: "emp Name"},
-                {field: "c_empgender", title: "c_empgender" ,editor: genderTypeRadioEditor }, 
-                {field: "c_dob", title: "c_dob"},
-                {field: "c_shift", title: "c_shift" ,  editor: shiftCheckboxEditor},
+                {field: "c_empid", title: "ID"},
+                {field: "c_empname", title: "Name"},
+                {field: "c_empgender", title: "Gender" ,editor: genderTypeRadioEditor }, 
+                {field: "c_dob", title: "Date Of Birth"},
+                {field: "c_shift", title: "Shift" , template: "#= c_shift.join(',') #" , editor: shiftCheckboxEditor},
                 @* {field: "c_img", title: "c_img"}, *@
                 {
-                        field: "imgFile", title: "emp Photo",
+                        field: "imgFile", title: "Photo",
                         editor: imageupload,
                         template: "<img src='#= c_img #' alt='emp Photo' style='max-width: 100px; max-height: 100px;'/>"
                 },
-                {field: "c_depart", title: "c_depart" , editor:deptDropDownEditor},
+                {field: "c_depart", title: "Department" , editor:deptDropDownEditor,template: '#= depname #'},
                 {command: ["edit", "destroy"], title: "&nbsp;", width: "200px"}
             ],
                 editable:"popup",
@@ -122,30 +123,44 @@
                 
                 checkboxWrapper.kendoCheckBoxGroup({
                     items: [
-                        { label: "M", value: "M" },
-                        { label: "A", value: "A" },
+                        { label: "Morning", value: "M" },
+                        { label: "Afternoon", value: "A" },
                         
                     ]
                 });
                 var checkboxGroup = checkboxWrapper.data("kendoCheckBoxGroup");
                 var c_shift = options.model.c_shift || []; 
-                checkboxGroup.value(c_shift); 
+                checkboxGroup.value(c_shift.map(function(shift) { return shift; }));
                 checkboxGroup.bind("change", function (e) {
                     var selectedShifts = e.sender.value();
-                    @* var shifts=selectedShifts.split(",");  *@
-                    options.model.set("c_shift", shifts);
+                    options.model.set("c_shift", selectedShifts);
                 });
+                
             }
 
              function imageupload(container, options) {
-                $('<input name="imgFile" type="file" id="imgFile" data-role="upload" data-async=\'{ "saveUrl": "https://localhost:7022/api/APIKendoGrid/UploadPhoto", "autoUpload": true }\' class="k-input k-textbox">').appendTo(container);
-                @* imgFile.on("success", function(e) {
-    
-                var imageUrl = e.response.imageUrl;
-                var grid = $("#grid").data("kendoGrid");
-                var dataItem = grid.dataItem(container.closest("tr"));
-                dataItem.set("c_img", imageUrl);
-            }); *@
+                $('<input name="imgFile" type="file" id="imgFile" class="k-input k-textbox">').appendTo(container);
+                $("#imgFile").kendoUpload({
+                        async: {
+                            saveUrl: "https://localhost:7022/api/APIKendoGrid/UploadPhoto",
+                            autoUpload: true,
+                            multiple: false, 
+                            showPreview: true, 
+                            extensions: ["pdf", "docx", "jpeg","png"],
+                        },
+                        success: function(e) {
+                            console.log(e.response.imageUrl);
+                            debugger;
+                            options.model.set("c_img", e.response.imageUrl);
+                        
+                        },
+                        error: function(e) {
+                     
+                            console.error("Upload failed:");
+                        },
+                        
+                });
+
             }
 
              function deptDropDownEditor(container, options) {

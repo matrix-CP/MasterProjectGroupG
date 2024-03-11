@@ -14,11 +14,10 @@
 
         <div>
             <label>Gender:</label>
-              <label for="c_empgender">Male</label>
             <input id="txtMGender" type="radio" asp-for="c_empgender" value="Male" />
-              <label for="c_empgender">Female</label>
+    
             <input id="txtFGender" type="radio" asp-for="c_empgender" value="Female" />
-              <label for="c_empgender">Other</label>
+
             <input id="txtOGender" type="radio" asp-for="c_empgender" value="Other" /><br>
         </div>
 
@@ -32,9 +31,7 @@
         <div>
             <label for="c_shift">Shift:</label>
             <div>
-                <label for="c_shift">A</label>
                 <input id="A" name="c_shift" type="checkbox" value="A" checked='@(@Model.c_shift!=null && Model.c_shift.Contains("A"))'/>
-                <label for="c_shift">M</label>
                <input id="M" name="c_shift" type="checkbox"  value="M" checked='@(@Model.c_shift!=null && Model.c_shift.Contains("M"))'/><br>
             </div>
               
@@ -42,7 +39,7 @@
 
         <div class="form-group">
             <p>Department</p>
-            <select kendo-dropdownlist asp-for="c_depart" style="width: 100%">
+            <select kendo-dropdownlist id="depart" asp-for="c_depart" style="width: 100%">
                 @foreach (var dep in Model.depList)
                 {
                     <option value="@dep.Value">@dep.Text</option>
@@ -53,9 +50,11 @@
         <div class="form-group">
             <p>Employee Pic</p>
             <input kendo-upload asp-for="imgFile">
+            <image src="@Model.c_img" alt="@Model.c_img" width="200px"></image>
         </div>
 
         <input class="btn btn-success" type="submit" value="Update Employee">
+          <a id="backButton" class="btn btn-primary" asp-action="Admin" asp-route-id="@Model.c_empid">Back</a>
         @* <a asp-controller="MVCKendoComp" asp-action="Admin" class="btn btn-primary">Back</a> *@
     </form>
 </div>
@@ -66,7 +65,7 @@
             // Set initial values for Kendo components using JavaScript
             @* $("input[name='c_shift_A']").prop("checked", "@Model.c_shift".includes("A"));
             $("input[name='c_shift_M']").prop("checked", "@Model.c_shift".includes("M")); *@
-            $("select[name='c_depart']").data("kendoDropDownList").value("@Model.c_depart");
+            $("#depart").kendoDropDownList();
 
             $("#txtMGender").kendoRadioButton({
                 label:"Male",
@@ -119,6 +118,6 @@
                         console.error("Error:", textStatus, errorThrown);
                     }
                 }); *@
-        });
+        
     </script>
 }

@@ -35,9 +35,8 @@
         <div class="form-group">
             <p>Department</p>
             <select id="txtDepart" kendo-dropdownlist asp-for="c_depart" style="width: 100%">
-                <option value="1">CEO</option>
-                <option value="2">Testing</option>
-                <option value="3">R&D</option>
+                <option value="">Select Department</option>
+                
             </select>
         </div>
 
@@ -85,7 +84,20 @@
                 rounded: "large"
             });
 
-            $("#txtDepart").kendoDropDownList();
+            $('#txtDepart').kendoDropDownList({
+                        dataTextField:"text",
+                        dataValueField:"value",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "https://localhost:7022/api/APIKendoComp/GetDept",
+                                    dataType: "json"
+                                }
+                            },
+                        },
+                        height: "400px",
+                        filter: "contains",
+                });
 
             $("#filePicker").kendoUpload();
 

@@ -58,7 +58,7 @@
                         c_shift: {type: "string", validation: {required: true}},
                         c_img: {type: "string", validation: {required: true}},
                        imgFile: { type: "file", validation: { required: true } },
-
+                        depname: {type: "string", validation: {required: false}},
                         c_depart: {type: "number", validation: {required: true}}
                     }
                 }
@@ -68,8 +68,8 @@
         $("#grid").kendoGrid({
             dataSource: dataSource,
             columns: [
-                {field: "c_empid", title: "emp ID"},
-                {field: "c_empname", title: "emp Name"},
+                {field: "c_empid", title: "ID"},
+                {field: "c_empname", title: "Name"},
                 {field: "c_empgender", title: "Gender" ,editor: genderTypeRadioEditor }, 
                 {field: "c_dob", title: "Date Of Birth"  , format: "{0:yyyy-MM-dd}" ,editor:dateEditor},
                 {field: "c_shift", title: "Shift" ,  editor: shiftCheckboxEditor},
@@ -77,11 +77,11 @@
 
                 
                  {
-                        field: "imgFile", title: "emp Photo",
+                        field: "imgFile", title: "Photo",
                         editor: imageupload,
                         template: "<img src='#= c_img #' alt='emp Photo' style='max-width: 100px; max-height: 100px;'/>"
                 },
-                {field: "c_depart", title: "c_depart" , editor:deptDropDownEditor},
+                {field: "c_depart", title: "Department" , editor:deptDropDownEditor,template: '#= depname #'},
                 {command: ["edit", "destroy"], title: "&nbsp;", width: "200px"}
             ],
             editable: "popup",

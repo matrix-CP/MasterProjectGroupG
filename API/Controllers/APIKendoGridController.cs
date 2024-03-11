@@ -25,24 +25,24 @@ namespace API.Controllers
 
 
         [HttpPost("UploadPhoto")]
-        public async Task<IActionResult> UploadImage(IFormFile file)
+        public async Task<IActionResult> UploadImage([FromForm]IFormFile imgFile)
         {
             try
             {
-                if (file == null || file.Length == 0)
+                if (imgFile == null || imgFile.Length == 0)
                 {
                     return BadRequest("No file uploaded.");
                 }
                 
-
-                string uniqueFileName = Guid.NewGuid().ToString() + file.FileName;
-                string filepath = Path.Combine(_hostingEnvironment.WebRootPath, "Images", uniqueFileName);
+                var folderPath = @"G:\Shivang\CollegeWork\Sem-8\Internship_Casepoint\Git\Learn\MasterProjectGroupG (1)\MasterProjectGroupG\MVC\wwwroot";
+                string uniqueFileName = Guid.NewGuid().ToString() + imgFile.FileName;
+                string filepath = Path.Combine(folderPath, "Images", uniqueFileName);
                 
 
 
                 using (var stream = new FileStream(filepath, FileMode.Create))
                 {
-                    await file.CopyToAsync(stream);
+                    await imgFile.CopyToAsync(stream);
                 }
 
                 string imageUrl = $"/Images/{uniqueFileName}";

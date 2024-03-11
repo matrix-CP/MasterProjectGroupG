@@ -143,9 +143,7 @@
                     }
                 });
             }
-            $('#UpdateEmployeeButton').click(function () {
-                $('#editForm').hide();
-            });
+           
 
             $('#CancelEditButton').click(function () {
                 $('#editForm').hide();
@@ -202,7 +200,11 @@
                     processData: false,
                     success: function (data) {
                         alert('Employee details updated successfully');
+                        $('#editForm').hide();
                         loadData();
+                    },
+                    error: function (xhr, status, error) {
+                        console.error('Error Updating Employee:', status, error);
                     }
                 });
             });

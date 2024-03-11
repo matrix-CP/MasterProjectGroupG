@@ -5,7 +5,7 @@
 
 
 
-<h2>Welcome Admin @ViewData["user_id"]🧑🏻‍💻</h2>
+<h2>Welcome @ViewData["username"]🧑🏻‍💻</h2>
 
 <a asp-controller="APIAjax" asp-action="login" class="btn btn-warning">Logout</a>
 
@@ -89,11 +89,10 @@
     <script>
         $(document).ready(function () {
             var uid=0;
-            loadData();
-            setTimeout(loadCity, 2000);
+            loaddepts();
+            setTimeout(loadData, 2000);
             var photopath = "";
-            @* setInterval(loadData, 10000); *@
-            function loadCity(){
+            function loaddepts(){
                 $.ajax({
                 url: 'https://localhost:7022/api/AjaxAPI/GetDepartments',
                 type: 'GET',
@@ -143,9 +142,7 @@
                     }
                 });
             }
-            $('#UpdateEmployeeButton').click(function () {
-                $('#editForm').hide();
-            });
+
 
             $('#CancelEditButton').click(function () {
                 $('#editForm').hide();
@@ -202,7 +199,11 @@
                     processData: false,
                     success: function (data) {
                         alert('Employee details updated successfully');
-                        setTimeout(loadData,2000);
+                        $('#editForm').hide();
+                        loadData();
+                    },
+                    error: function (xhr, status, error) {
+                        alert("Error updating employee: " + error);
                     }
                 });
             });
@@ -241,27 +242,7 @@
                     }
                 });
             });
-            function loadCity(){
-                $.ajax({
-                url: 'https://localhost:7022/api/AjaxAPI/GetDepartments',
-                type: 'GET',
-                dataType: 'json',
-                success: function (data) {
-                    if (Array.isArray(data)) {
-                        var dropdown = $('#empDepartment');
-                        dropdown.empty().append($('<option value="">Select Department</option>'));
-                        data.forEach(function (department) {
-                            dropdown.append($('<option>').val(department.value).text(department.text));
-                        });
-                    } else {
-                        console.error('Invalid data format:', data);
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error('Error fetching departments:', status, error);
-                }
-            });
-            }
+           
             
 
             $('#EmployeeTable').on('click', '.delete', function () {

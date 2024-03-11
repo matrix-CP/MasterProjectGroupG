@@ -4,69 +4,75 @@
 }
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Login</title>  
+    <title>Login</title>
 </head>
+
 <body>
-   
-   <form asp-action="Login" asp-controller="MVCKendoComp" method="post" id="login">
+
+    <form asp-action="Login" asp-controller="MVCKendoComp" method="post" id="login">
         <div>
-            <input id="email" asp-for="c_uemail"/>
+            <input id="email" asp-for="c_uemail" />
         </div>
         <div>
-            <input id="password" asp-for="c_password" type="password"/>
+            <input id="password" asp-for="c_password" type="password" />
         </div>
         <br>
         <input type="submit" value="Login" id="loginbtn" class="btn btn-success">
-   </form>
+        <br>
+        Don't have An Account? <a asp-action="Register" asp-controller="/MVCKendoComp">Register</a>
+        
+    </form>
 
     <script>
 
-         $(document).ready(function() {
+        $(document).ready(function () {
             $("#email").kendoTextBox({
-                 label: {
+                label: {
                     content: "Email",
                     floating: true
                 }
             });
-        
 
-         
+
+
             $("#password").kendoTextBox({
-                 label: {
+                label: {
                     content: "Password",
                     floating: true
                 }
             });
-    
+            
 
-          $("#loginbtn").kendoButton({
+
+            $("#loginbtn").kendoButton({
                 themeColor: "primary"
             });
-            $(document).on("click","#loginbtn",function(e){
+            $(document).on("click", "#loginbtn", function (e) {
                 e.preventDefault();
                 var formData = $("#login").serialize();
                 $.ajax({
-                    url:"Login",
-                    method:"post",
-                    data:formData,
-                    success: function(response){
+                    url: "/MVCKendoComp/Login",
+                    method: "post",
+                    data: formData,
+                    success: function (response) {
                         console.log(response);
-                        if(response=="Admin"){
+                        if (response == "Admin") {
                             alert("Loged In Successfully!");
-                            
-                            window.location.href="https://localhost:7249/MVCKendoComp/Admin";
+
+                            window.location.href = "https://localhost:7249/MVCKendoComp/Admin";
                         }
-                        else if(response=="Employee"){
+                        else if (response == "Employee") {
                             alert("Loged In Successfully!");
-                            window.location.href="https://localhost:7249/MVCKendoComp/Employee";
-                            }
-                        else{
+                            window.location.href = "https://localhost:7249/MVCKendoComp/Employee";
+                        }
+                        else {
                             alert(response);
-                            @* window.location.href="https://localhost:7114/Employee/Login"; *@
-                        }    
+        @* window.location.href="https://localhost:7114/Employee/Login"; *@
+                        }
                     },
-                    error:function(jqXHR, textStatus, errorThrown){
+                    error: function (jqXHR, textStatus, errorThrown) {
                         alert("Some Error Occured");
                         console.error("Error:", textStatus, errorThrown);
                     }
@@ -80,4 +86,5 @@
 
     </script>
 </body>
+
 </html>

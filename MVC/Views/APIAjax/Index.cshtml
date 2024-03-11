@@ -3,15 +3,32 @@
     Layout = "~/Views/Shared/_customLayout.cshtml";
 }
 
-<h1>Welcome @ViewData["user_id"]</h1>
-@* <h2>Welcome @ViewData["username"]</h2> *@
-@{
-    var username = Context.Session.GetString("username");
-    var email = Context.Session.GetString("email");
-}
+@* <h1>Welcome @ViewData["user_id"]</h1> *@
+<h2>Welcome @ViewData["username"]🧑🏻‍💻</h2>
+
 <a asp-controller="APIAjax" asp-action="login" class="btn btn-warning">Logout</a>
 
 <button id="showFormBtn" class="btn btn-info">Add Your Details</button><br>
+
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
 
 <div id="addEmployeeFormContainer" style="display: none;">
     <h2>Add Employee</h2>
@@ -64,26 +81,6 @@
     </form>
 </div>
 
-<div>
-    <table id="EmployeeTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Gender</th>
-                <th>DOB</th>
-                <th>Shift</th>
-                <th>Department</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- The table data will be filled using AJAX -->
-        </tbody>
-    </table>
-</div>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 @section Scripts
@@ -114,6 +111,8 @@
                     contentType: false,
                     success: function (data) {
                         alert("Employee added successfully!");
+                        $("#addEmployeeFormContainer").toggle();
+                        loadData();
                     },
                     error: function (xhr, status, error) {
                         alert("Error adding employee: " + error);
@@ -121,7 +120,6 @@
                 });
             });
 
-            @* loadData(); *@
             
 
             function loadData() {
@@ -169,12 +167,12 @@
                     console.error('Error fetching departments:', status, error);
                 }
             });
-            setTimeout(loadData, 1000);
+            setTimeout(loadData, 3000);
 
             $('#EmployeeTable').on('click', '.delete', function () {
                 var c_empid = $(this).data('id');
 
-                if (confirm('Are you sure you want to delete this book?')) {
+                if (confirm('Are you sure you want to delete this employee?')) {
                     $.ajax({
                         url: 'https://localhost:7022/api/AjaxAPI/DeleteEmployee?id=' + c_empid,
                         type: 'POST',

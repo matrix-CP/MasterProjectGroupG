@@ -63,7 +63,7 @@ builder.Services.AddSession(options =>
 
 builder.Services.AddCors(p => p.AddPolicy("corsapp", builder =>
 {
-    builder.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+    builder.WithOrigins("https://localhost:7249").AllowAnyMethod().AllowAnyHeader().AllowCredentials();
 }));
 
 builder.Services.AddSwaggerGen(c =>

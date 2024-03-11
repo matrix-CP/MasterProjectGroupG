@@ -34,7 +34,8 @@
 
         <div>
             <br><input type="submit" value="Register" id="btnSubmit" class="btn btn-success" />
-            <a id="logButton" class="btn btn-primary">Login</a>
+            <br>
+            Already Have An Account? <a asp-action="Login" asp-controller="/APIKendoComp">Login</a>
         </div>
     </div>
 }
@@ -72,12 +73,7 @@
                 themeColor: "success"
             });
 
-            $("#logButton").kendoButton({
-                click: function () {
-              
-                    window.location.href = "/APIKendoComp/Login";
-                }
-            });
+            
             $(document).on("click", "#btnSubmit", function (e) {
                 e.preventDefault();
                 var formData = $("#register").serialize();

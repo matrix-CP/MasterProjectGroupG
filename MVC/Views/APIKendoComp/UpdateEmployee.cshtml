@@ -42,9 +42,7 @@
         <div class="form-group">
             <p>Department</p>
             <select id="empDepartment" kendo-dropdownlist asp-for="c_depart" style="width: 100%">
-                <option value="1">CEO</option>
-                <option value="2">Testing</option>
-                <option value="3">R&D</option>
+                <option value="">Select Department</option>
             </select>
         </div>
 
@@ -65,7 +63,7 @@
         $(document).ready(function () {
             $("#empName").kendoTextBox();
             $("#empDob").kendoDatePicker();
-            $("#empDepartment").kendoDropDownList();
+            
             $("#empPic").kendoUpload();
 
             $("#txtMGender").kendoRadioButton({
@@ -95,7 +93,22 @@
                 rounded: "large"
             });
 
-      
+            function loadDepts() {
+                $('#empDepartment').kendoDropDownList({
+                        dataTextField:"text",
+                        dataValueField:"value",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: "https://localhost:7022/api/APIKendoComp/GetDept",
+                                    dataType: "json"
+                                }
+                            },
+                        },
+                        height: "400px",
+                        filter: "contains",
+                });
+            }
             function LoadEmployeeDetails() {
                 var settings = {
                     "url": "https://localhost:7022/api/APIKendoComp/GetEmployee/" + @ViewBag.id,
@@ -111,7 +124,8 @@
         @* $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
                     $("#c_dob").val(response.c_dob); *@
                         $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
-                    $("#empDepartment").val(response.c_depart);
+                    var dropdown=$("#empDepartment").data("kendoDropDownList");
+                    dropdown.value(response.c_depart);
                     $.each(response.c_shift, function (index, value) {
                         $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
                     });
@@ -119,7 +133,8 @@
                 });
 
             }
-            LoadEmployeeDetails();
+            loadDepts();
+            setTimeout(LoadEmployeeDetails,2000);
             $("#updateEmployeeForm").submit(function (e) {
                 e.preventDefault();
 

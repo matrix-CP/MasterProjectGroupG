@@ -10,12 +10,33 @@
 
 <button id="showFormBtn" class="btn btn-info">Add Your Details</button><br>
 
+
+
+<div>
+    <table id="EmployeeTable" class="table table-striped">
+        <thead>
+            <tr>
+                <th>Employee ID</th>
+                <th>Employee Name</th>
+                <th>Gender</th>
+                <th>DOB</th>
+                <th>Shift</th>
+                <th>Department</th>
+                <th>Image</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- The table data will be filled using AJAX -->
+        </tbody>
+    </table>
+</div>
 <div id="addEmployeeFormContainer" style="display: none;">
     <h2>Add Employee</h2>
     <form id="AddEmployeeForm" enctype="multipart/form-data">
         <div class="form-group">
             <label for="c_empname">Employee Name:</label>
-            <input type="text" class="form-control" id="empname" name="empname" value="@username" readonly>
+            <input type="text" class="form-control" id="empname" name="empname">
         </div>
         <div class="form-group">
             <label>Gender:</label>
@@ -55,27 +76,6 @@
         <button type="button" class="btn btn-primary" id="AddEmployeeButton">Add Employee</button>
     </form>
 </div>
-
-<div>
-    <table id="EmployeeTable" class="table table-striped">
-        <thead>
-            <tr>
-                <th>Employee ID</th>
-                <th>Employee Name</th>
-                <th>Gender</th>
-                <th>DOB</th>
-                <th>Shift</th>
-                <th>Department</th>
-                <th>Image</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <!-- The table data will be filled using AJAX -->
-        </tbody>
-    </table>
-</div>
-
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 @section Scripts
@@ -105,6 +105,8 @@
                     contentType: false,
                     success: function (data) {
                         alert("Employee added successfully!");
+                        $("#addEmployeeFormContainer").toggle();
+                        loadData();
                     },
                     error: function (xhr, status, error) {
                         alert("Error adding employee: " + error);
@@ -167,7 +169,7 @@
             $('#EmployeeTable').on('click', '.delete', function () {
                 var c_empid = $(this).data('id');
 
-                if (confirm('Are you sure you want to delete this book?')) {
+                if (confirm('Are you sure you want to delete this Employee?')) {
                     $.ajax({
                         url: '/MVCAjax/DeleteEmployee/' + c_empid,
                         type: 'POST',

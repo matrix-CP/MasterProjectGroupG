@@ -20,6 +20,8 @@
         </div>
         <br />
         <button type="button" class="btn btn-primary" id="LoginButton">Login</button>
+        <br>
+        Don't have An Account? <a asp-action="Register" asp-controller="/APIAjax">Register</a>
     </form>
 </div>
 
@@ -45,11 +47,11 @@
                     if (data.status == "Success") {
                         console.log(data);
                    
-                        window.location.href = "/APIAjax/Index/?user_id="+data.id;
+                        window.location.href = "/APIAjax/Index/?user_id="+data.id+"&username="+data.username;
                     }
                     else if(data.status == "Admin")
                     {
-                        window.location.href = "/APIAjax/Dashboard/?user_id="+data.id;
+                        window.location.href = "/APIAjax/Dashboard/?user_id="+data.id+"&username="+data.username;
                    
                     }
                     else {

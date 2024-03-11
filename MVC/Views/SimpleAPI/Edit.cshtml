@@ -14,15 +14,42 @@
 <script>
     $(document).ready(function () {
         var employeeId = @ViewBag.id;
-        if (employeeId > 0) {
+        loadCity();
+        setTimeout(LoadEmployee,3000);
+        function LoadEmployee(){
+            if (employeeId > 0) {
             LoadEmployeeDetails();
+            }
         }
+        
 
         $("#CancelEmployeeButton").click(function () {
-                window.location.href = "/SimpleAPI/Employee";
+            window.location.href = "/SimpleAPI/Employee";
         });
     });
 
+    function loadCity(){
+                $.ajax({
+                url: 'https://localhost:7022/api/SimpleAPI/GetDept',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (Array.isArray(data)) {
+                        var dropdown = $('#c_depart');
+                        dropdown.empty().append($('<option value="">Select Department</option>'));
+                        data.forEach(function (department) {
+                            dropdown.append($('<option>').val(department.value).text(department.text));
+                        });
+                    } else {
+                        console.error('Invalid data format:', data);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error('Error fetching departments:', status, error);
+                }
+            });
+            }
+            
     function LoadEmployeeDetails() {
         var settings = {
             "url": "https://localhost:7022/api/SimpleAPI/GetEmployee/" + @ViewBag.id,
@@ -35,16 +62,16 @@
             $("#c_empid").val(response.c_empid);
             $("#c_empname").val(response.c_empname);
             $("#c_dob").val(response.c_dob.split('T')[0]);
-            @* $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
-            $("#c_dob").val(response.c_dob); *@
-            $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
+    @* $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
+                $("#c_dob").val(response.c_dob); *@
+                $("input[name='c_empgender'][value='" + response.c_empgender + "']").prop("checked", true);
             $("#c_depart").val(response.c_depart);
-            $.each(response.c_shift, function(index, value) {
-                    $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
+            $.each(response.c_shift, function (index, value) {
+                $("input[name='c_shift'][value='" + value + "']").prop("checked", true);
             });
             $('#imageupload').attr('src', response.c_img);
         });
-            
+
     }
 
     function UpdateEmployee() {
@@ -68,7 +95,7 @@
         formData.append("c_dob", updateEmployee.c_dob);
         formData.append("c_empgender", updateEmployee.c_empgender);
         formData.append("c_depart", updateEmployee.c_depart);
-        formData.append("imgFile",$('#imgFile')[0].files[0]);
+        formData.append("imgFile", $('#imgFile')[0].files[0]);
 
         // Add shifts to formData
         updateEmployee.c_shift.forEach(function (shift) {
@@ -88,70 +115,69 @@
         };
         $.ajax(settings).done(function (response) {
             alert("Employee updated successfully!");
-            
+
             window.location = "../Index";
         });
     }
 </script>
 <form enctype="multipart/form-data">
-<div class="form-horizontal">
-    <div class="form-group">
-        <div>
-            <input type="hidden" name="c_empid" id="c_empid" />
-        </div>
-
+    <div class="form-horizontal">
         <div class="form-group">
-            <label for="c_empname">Employee Name</label>
-            <input type="text" name="c_empname" id="c_empname" class="form-control" />
-        </div>
-
-         <div class="form-group">
-            <label for="c_empgender">Gender</label>
             <div>
-                <input type="radio" name="c_empgender" value="Male" id="male" /> <label for="male"> Male</label>
-                <input type="radio" name="c_empgender" value="Female" id="female" /> <label for="female">Female</label>
-                <input type="radio" name="c_empgender" value="Other" id="other" /> <label for="other"> Other</label>
+                <input type="hidden" name="c_empid" id="c_empid" />
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="c_dob">Date of Birth</label>
-            <input type="date" name="c_dob" id="c_dob" class="form-control" />
-        </div>
-
-       <div class="form-group">
-            <label for="c_shift">Shifts</label>
-            <div>
-                <input type="checkbox" name="c_shift" value="A" id="shiftA" /> <label for="shiftA"> A</label>
-                <input type="checkbox" name="c_shift" value="M" id="shiftM" /> <label for="shiftM"> M</label>
+            <div class="form-group">
+                <label for="c_empname">Employee Name</label>
+                <input type="text" name="c_empname" id="c_empname" class="form-control" />
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="c_depart">Department</label>
-            <select for="c_depart" id="c_depart">
-                <option value="1">CEO</option>
-                <option value="2">Testing</option>
-                <option value="3">R&D</option>
-                
-            </select>
-            @* <input type="text" name="c_depart" id="c_depart" class="form-control" /> *@
-        </div>
+            <div class="form-group">
+                <label for="c_empgender">Gender</label>
+                <div>
+                    <input type="radio" name="c_empgender" value="Male" id="male" /> <label for="male"> Male</label>
+                    <input type="radio" name="c_empgender" value="Female" id="female" /> <label
+                        for="female">Female</label>
+                    <input type="radio" name="c_empgender" value="Other" id="other" /> <label for="other"> Other</label>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <label for="imgFile">Image:</label>
-            <input type="file" class="form-control" id="imgFile" name="imgFile">
+            <div class="form-group">
+                <label for="c_dob">Date of Birth</label>
+                <input type="date" name="c_dob" id="c_dob" class="form-control" />
+            </div>
+
+            <div class="form-group">
+                <label for="c_shift">Shifts</label>
+                <div>
+                    <input type="checkbox" name="c_shift" value="A" id="shiftA" /> <label for="shiftA"> A</label>
+                    <input type="checkbox" name="c_shift" value="M" id="shiftM" /> <label for="shiftM"> M</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="c_depart">Department</label>
+                <select for="c_depart" id="c_depart">
+                    <option value="">Select Department</option>
+                    
+                </select>
+                @* <input type="text" name="c_depart" id="c_depart" class="form-control" /> *@
+            </div>
+
+            <div class="form-group">
+                <label for="imgFile">Image:</label>
+                <input type="file" class="form-control" id="imgFile" name="imgFile">
+                <br>
+                <img src="" id="imageupload" width="200">
+            </div>
             <br>
-            <img src="" id="imageupload" width="200">
-        </div>
-        <br>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="button" value="Update Employee" onclick="UpdateEmployee()" class="btn btn-primary">
-                <button type="button" class="btn btn-primary" id="CancelEmployeeButton">Cancel</button>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="button" value="Update Employee" onclick="UpdateEmployee()" class="btn btn-primary">
+                    <button type="button" class="btn btn-primary" id="CancelEmployeeButton">Cancel</button>
+                </div>
+
             </div>
-            
         </div>
     </div>
-</div>
 </form>

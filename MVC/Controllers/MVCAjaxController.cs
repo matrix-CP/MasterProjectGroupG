@@ -87,11 +87,7 @@ namespace MVC.Controllers
         }
 
 
-        [HttpGet]
-        public IActionResult AddEmployee()
-        {
-            return View();
-        }
+        
 
         [HttpPost]
         public JsonResult AddEmployee([FromForm] tblEmployee employee)

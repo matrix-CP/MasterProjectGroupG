@@ -73,8 +73,10 @@
 
 
         <div>
+            <br>
             <input type="submit" value="Register" id="btnSubmit" class="btn btn-success" />
-            <a id="logButton" class="btn btn-primary">Login</a>
+            <br>
+            Already Have An Account? <a asp-action="Login" asp-controller="/MVCKendoComp">Login</a>
         </div>
     </div>
 }
@@ -188,12 +190,7 @@
                     floating:true
                 }
             });
-            $("#logButton").kendoButton({
-                click: function () {
-              
-                    window.location.href = "/MVCKendoComp/Login";
-                }
-            });
+            
 
             $("#btnSubmit").kendoButton({
                 themeColor:"success"
@@ -206,7 +203,7 @@
                
                 
                 $.ajax({
-                    url:"Register",
+                    url:"/MVCKendoComp/Register",
                     method:"post",
                     data:formData,
                     
